@@ -1,10 +1,11 @@
 import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, getDaoContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
+import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
 
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
-
+import { option } from "commander";
+/*
 export async function daoCreate(): Promise<void> {
 
   const dao_params = {
@@ -35,35 +36,35 @@ export async function daoCreate(): Promise<void> {
   //near call $CONTRACT_ID create "{\"name\": \"genesis\", \"args\": \"$ARGS\"}"  --accountId $CONTRACT_ID --amount 5 --gas 150000000000000
 
 }
-export async function daoCreateTestnet(dao_name:string, options: Record<string, any>): Promise<void> {
+*/
+
+export async function daoCreate(dao_name:string, council:string, options: Record<string, any>): Promise<void> {
   const policy = {"policy": [
-    "lucio.testnet",
-    "laura-wulff.testnet",
-    "asimov.testnet",
-    "lucio2.testnet",
-    "lucio3.testnet"
+    "alan1.testnet"
   ]}
   const dao_params = {
     "config": {
-      "name": "dao",  "purpose": "meta-pool governance", "bond": "1000000000000000000000000", "metadata": ""
+      "name": dao_name,  "purpose": options.purpose, "bond": options.bond, "metadata": ""
     },
-    policy
+    "policy": [
+      council
+    ]
   };
-
+  console.log(dao_params);
   const dao_params_base_64 = encodeBase64(decodeUTF8(JSON.stringify(dao_params)));
+  console.log(options);
   if (options.accountId==null){
-
     throw Error(`You need to provide a NEAR ID using --accountId`);
   }
-
-  const sputnik2Factory = new SmartContract("sputnikv2.testnet");
-  configSigner(sputnik2Factory, options.accountId);
+  const dao_factory:string = (getNetworkEnding(options.Env)=='near')? 'sputnik-dao.near':"sputnikv2.testnet";
+  const sputnik2Factory = new SmartContract(dao_factory);
+  multiConfigSigner(sputnik2Factory, options.accountId,options.Env);
 
   await sputnik2Factory.call("create",
     {
-      name: "test-dao",
+      name: dao_name,
       args: dao_params_base_64
-    }, 150, ntoy(30));
+    }, 150, ntoy(5));
 
   //near call $CONTRACT_ID create "{\"name\": \"genesis\", \"args\": \"$ARGS\"}"  --accountId $CONTRACT_ID --amount 5 --gas 150000000000000
 
@@ -163,9 +164,21 @@ export async function daoListProposals(): Promise<void> {
 
 }
 
-export async function daoProposeCall(DaoId:string, ContractId: string, MethodCall: string, ArgsCall: string): Promise<void> {
-
-  const dao = getDaoContract(DaoId);
+export async function daoProposeCall(DaoId:string, MethodCall: string, ArgsCall: string, options: Record<string, any>): Promise<void> {
+  let env:string='';
+  let dao_factory:string='';
+  console.log(options.env);
+  if (options.env=='mainnet'){
+    env='near';
+    dao_factory='sputnik-dao';
+  }else if (options.env=='testnet'){
+    env='testnet';
+    dao_factory='sputnikv2';
+  }else{
+    throw new Error("This is not a valid network");
+  }
+  let dao_account = DaoId+'.'+dao_factory+'.'+env
+  const dao = getDaoContract(dao_account);
 
   console.log(ArgsCall);
   console.log(MethodCall);
@@ -176,7 +189,7 @@ export async function daoProposeCall(DaoId:string, ContractId: string, MethodCal
       description: "propose a calling a method to target contract",
       kind: {
         FunctionCall: {
-          receiver_id: ContractId,
+          receiver_id: options.targetId,
           //method_name: "get_proposals",
           //args: { from_index: 0, limit: 50 },
           actions: [{method_name: MethodCall, args : encodeBase64(decodeUTF8(ArgsCall)), deposit: "0", gas:"200000000000000"}]

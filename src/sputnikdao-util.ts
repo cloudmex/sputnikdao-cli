@@ -12,7 +12,7 @@ import { formatLargeNumbers, showNumbers } from "./util/format-near.js";
 import { getDaoContract, getMetaPoolContract, METAPOOL_CONTRACT_ACCOUNT, showContractAndOperator } from "./util/setup.js";
 import { deleteFCAK } from "./commands/delete-keys.js";
 import { testCall } from "./commands/test-call.js";
-import { daoCreate,daoCreateTestnet, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposeUpgrade, daoProposeCall, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove } from "./commands/dao.js";
+import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposeUpgrade, daoProposeCall, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove } from "./commands/dao.js";
 import { SmartContract } from "near-api-lite";
 
 main(process.argv, process.env);
@@ -22,10 +22,14 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   near.setLogLevel(1);
 
   program
-  .command("create-testnet <name>")
-  .option("-acc, --policy <policy>", "Asign a policy")
-  .option("-acc, --accountId <accountId>", "use account as signer")
-  .action(daoCreateTestnet);
+  .command("create <name> <council>")
+  .option("--policy <policy>", "Asign a policy")
+  .option("--bond <bond>", "Asign bond","1000000000000000000000000")
+  .option("--metadata <meta>", "Asign metadata","")
+  .option("--accountId <accountId>", "Use account as signer")
+  .option("--purpose <purpose>", "Give a purpose to DAO","Sputnik V2 DAO")
+  .option("-env <env>", "Use account as signer","testnet")
+  .action(daoCreate);
 
   const dao_propose = program.command("proposal");
   
@@ -36,8 +40,11 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .action(daoProposeUpgrade);
 
   dao_propose
-    .command("call <DaoId> <ContractId> <MethodCall> <ArgsCall>")
+    .command("call <DaoId> <MethodCall> <ArgsCall>")
     .description("propose calling to a SC method")
+    .option("--factoryId <factoryId>","Choose a differente DAO factory: dao.<factoryId>.testnet","sputnikv2")
+    .option("--targetId <targetId>","Choose target smartcontract for calling")
+    .option("--env <env>", "Choose an environment, options: testnet, mainnet","testnet")
     .action(daoProposeCall); 
 
   program

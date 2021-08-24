@@ -2,7 +2,7 @@
   "name": "sputnikdao-cli",
   "version": "1.0.0",
   "description": "Sputnik DAO CLI",
-  "bin": "dist/meta-util.js",
+  "bin": "dist/sputnikdao-util.js",
   "type": "commonjs",
   "scripts": {
     "build": "tsc -b -verbose",
@@ -15,7 +15,7 @@
     "meta-pool",
     "staking"
   ],
-  "author": "Narwallets.com",
+  "author": "Alan Estrada | CloudMex Analytics",
   "license": "ISC",
   "dependencies": {
     "bn.js": "^5.2.0",

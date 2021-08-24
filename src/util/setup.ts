@@ -9,7 +9,7 @@ import { SmartContract } from "near-api-lite";
 
 export const hostname = os.hostname();
 export const prodMode = false;
-export const NETWORK_ID = prodMode ? "mainnet" : "testnet";
+export const NETWORK_ID:string = prodMode ? "mainnet" : "testnet";
 network.setCurrent(NETWORK_ID);
 export const METAPOOL_CONTRACT_ACCOUNT = prodMode ? "contract3.preprod-pool.near" : "contract3.preprod-pool.testnet";
 export const OPERATOR_ACCOUNT = prodMode ? "alantests.near" : "operator.preprod-pool." + NETWORK_ID;
@@ -50,6 +50,17 @@ export function getCredentials(accountId: string): Credentials {
   }
   return result;
 }
+//--------------------------
+export function newGetCredentials(accountId: string,network: string): Credentials {
+  const homedir = os.homedir();
+  const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/"+network+"/" + accountId + ".json");
+  const credentialsString = fs.readFileSync(CREDENTIALS_FILE).toString();
+  const result: Credentials = JSON.parse(credentialsString);
+  if (!result.private_key) {
+    console.error("INVALID CREDENTIALS FILE. no priv.key");
+  }
+  return result;
+}
 
 //------------------------------------
 export function configSigner(contract: SmartContract, signerAccountId: string): void {
@@ -58,7 +69,13 @@ export function configSigner(contract: SmartContract, signerAccountId: string): 
   contract.signer = signerAccountId;
   contract.signer_private_key = credentials.private_key;
 }
-
+//------------------------------------
+export function multiConfigSigner(contract: SmartContract, signerAccountId: string, network: string): void {
+  //config contract proxy credentials
+  const credentials = newGetCredentials(signerAccountId,network);
+  contract.signer = signerAccountId;
+  contract.signer_private_key = credentials.private_key;
+}
 //------------------------------------
 export function getDaoContract(DaoId?: string): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
@@ -80,6 +97,17 @@ export function getMetaPoolContract(): MetaPool {
   const metaPool = new MetaPool(program.opts().contract)
   configSigner(metaPool, OPERATOR_ACCOUNT);
   return metaPool;
+}
+
+//Return 'near' if mainnet or testnet if 'testnet
+export function getNetworkEnding(network:string):string{
+  if(network=='mainnet'){
+    return 'near';
+  }else if(network=='testnet'){
+    return 'testnet';
+  }else{
+    throw new Error("Network not available");
+  }
 }
 
 export function showContractAndOperator(metaPool: MetaPool): void {
