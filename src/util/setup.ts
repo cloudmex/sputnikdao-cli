@@ -81,7 +81,7 @@ export function getDaoContract(DaoId?: string): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
   let dao_acc:string='';
   if (DaoId){
-    dao_acc=DaoId;
+    dao_acc=DaoId+".sputnikv2.testnet";
   }else{
     dao_acc="metadao.sputnikv2.testnet";
   }

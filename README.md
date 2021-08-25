@@ -19,11 +19,19 @@ Sophia wants to create a proposal to a sputnik DAO, she requires a payout and a 
 
 Sophia obtains from CLI the ID's of the proposals.
 
+```bash
+sputnikdao-cli proposal payout 5 --daoAcc mydao_alan --accountId alan1.testnet
+```
+
 ### Listing proposals
 
 Anne wants to know which are the proposals in a sputnik DAO, she wants to know which ones are open, which ones are accepted and rejected.
 
 Anne obtains from CLI a list of proposals order by ID and could be filtered by current state (Open, accepted, rejected)
+
+```bash
+sputnikdao-cli list proposals  --daoAcc mydao_alan
+```
 
 ### Voting a proposal
 
@@ -31,7 +39,15 @@ Mark is part of the DAO council and is required his participation for voting a p
 
 Sputnikdao-cli returns new state after votation.
 
-## Switching network
+```bash
+PROPOSAL_ID=2
+DAO_ACC=mydao_alan
+SIGNER_ID=alan1.testnet  
+sputnikdao-cli vote approve $PROPOSAL_ID --daoAcc $DAO_ACC --account $SIGNER_ID
+sputnikdao-cli vote unapprove $PROPOSAL_ID --daoAcc $DAO_ACC --account $SIGNER_ID
+```
+
+### Switching network
 
 Maria is using sputnikdao-cli as a tool for develop NEAR DApps, she now wants to change from testnet to mainnet for putting in production his DApp, she is able to do that by indicating the option inside the command.
 

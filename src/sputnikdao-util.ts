@@ -12,7 +12,7 @@ import { formatLargeNumbers, showNumbers } from "./util/format-near.js";
 import { getDaoContract, getMetaPoolContract, METAPOOL_CONTRACT_ACCOUNT, showContractAndOperator } from "./util/setup.js";
 import { deleteFCAK } from "./commands/delete-keys.js";
 import { testCall } from "./commands/test-call.js";
-import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposeUpgrade, daoProposeCall, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove } from "./commands/dao.js";
+import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeCall, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove } from "./commands/dao.js";
 import { SmartContract } from "near-api-lite";
 
 main(process.argv, process.env);
@@ -38,6 +38,14 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
     .description("propose upgrading the meta-pool contract code")
     .action(daoProposeUpgrade);
+  
+  dao_propose
+    .command("payout <amount>")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
+    .option("-env <env>", "Use account as signer","testnet")
+    .description("Add a new proposal for payout")
+    .action(daoProposePayout);
 
   dao_propose
     .command("call <DaoId> <MethodCall> <ArgsCall>")
@@ -92,43 +100,28 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .command("get_policy")
     .action(daoGetPolicy);
 
-  const dao_vote =
-    dao
-      .command("vote")
+  const dao_vote = program.command("vote")
 
   dao_vote
     .command("approve <proposal-index>")
     .option("-a, --account <account>", "use account as signer")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .action(daoVoteApprove);
 
   dao_vote
     .command("unapprove <proposal-index>")
     .option("-a, --account <account>", "use account as signer")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .action(daoVoteUnapprove);
-    /*
-  const dao_propose = dao
-    .command("propose")
-    .description("crate a proposal in metapool's DAO");
-  
-  dao_propose
-    .command("upgrade <wasmFile>")
-    .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
-    .description("propose upgrading the meta-pool contract code")
-    .action(daoProposeUpgrade);
 
-  dao_propose
-    .command("call <MethodCall> <ArgsCall>")
-    .description("propose calling to a SC method")
-    .action(daoProposeCall); 
-    */
-
-  const dao_list = dao
+  const dao_list = program
     .command("list")
     .description("list items from metapool's DAO");
 
   dao_list
     .command("proposals")
     .description("list proposals")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .action(daoListProposals);
 
   dao_list

@@ -1,4 +1,4 @@
-import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
+import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
 import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
@@ -154,20 +154,56 @@ export async function daoProposeUpgrade(wasmFile: string, options: Record<string
 
 }
 
-export async function daoListProposals(): Promise<void> {
+export async function daoListProposals(options: Record<string, any>): Promise<void> {
 
-  const dao = getDaoContract();
+  const dao = getDaoContract(options.daoAcc);
 
   const result = await dao.view("get_proposals", { from_index: 0, limit: 50 });
 
   console.log(inspect(result, false, 5, true));
 
 }
-
-export async function daoProposeCall(DaoId:string, MethodCall: string, ArgsCall: string, options: Record<string, any>): Promise<void> {
-  let env:string='';
+export async function daoProposePayout(amount:number, options: Record<string, any>): Promise<void> {
+  /*let env:string='';
   let dao_factory:string='';
+  console.log(options);
+  if (options.Env=='mainnet'){
+    env='near';
+    dao_factory='sputnik-dao';
+  }else if (options.Env=='testnet'){
+    env='testnet';
+    dao_factory='sputnikv2';
+  }else{
+    throw new Error("This is not a valid network");
+  }
+  if(!options.daoAcc){ throw new Error("It's required DAO name as <DaoName>.daofactory.testnet"); }
+  let dao_account = options.daoAcc+'.'+dao_factory+'.'+env*/
+  let dao_account = options.daoAcc;
+  const dao = getDaoContract(dao_account);
+  let yocto_amount = ntoy(amount);
+  console.log(yocto_amount);
+  const addProposalCall = await dao.call("add_proposal", {
+    proposal: {
+      //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
+      description: "propose a payout",
+      kind: {
+        Transfer: {
+          receiver_id: options.accountId,
+          token_id: "", //default for basic $NEAR
+          amount: yocto_amount,
+        }
+      }
+    }
+  }, 200, ONE_NEAR.toString());
+
+  console.log(inspect(addProposalCall, false, 5, true));
+
+}
+export async function daoProposeCall(DaoId:string, MethodCall: string, ArgsCall: string, options: Record<string, any>): Promise<void> {
+  
   console.log(options.env);
+  /*let env:string='';
+  let dao_factory:string='';
   if (options.env=='mainnet'){
     env='near';
     dao_factory='sputnik-dao';
@@ -177,7 +213,8 @@ export async function daoProposeCall(DaoId:string, MethodCall: string, ArgsCall:
   }else{
     throw new Error("This is not a valid network");
   }
-  let dao_account = DaoId+'.'+dao_factory+'.'+env
+  let dao_account = options.daoAcc+'.'+dao_factory+'.'+env*/
+  let dao_account = options.daoAcc;
   const dao = getDaoContract(dao_account);
 
   console.log(ArgsCall);
@@ -273,7 +310,7 @@ export async function daoUpgrade(): Promise<void> {
 export async function daoVoteApprove(id: string, options: Record<string, any>): Promise<void> {
   //note: all commander args are strings
 
-  const dao = getDaoContract();
+  const dao = getDaoContract(options.daoAcc);;
   if (options.account) {
     configSigner(dao, options.account);
   }
@@ -294,7 +331,7 @@ export async function daoVoteApprove(id: string, options: Record<string, any>): 
 export async function daoVoteUnapprove(id: string, options: Record<string, any>): Promise<void> {
   //note: all commander args are strings
 
-  const dao = getDaoContract();
+  const dao = getDaoContract(options.daoAcc);
   if (options.account) {
     configSigner(dao, options.account);
   }
