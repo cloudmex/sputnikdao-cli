@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as os from "os";
 
 import * as network from "near-api-lite/lib/network.js";
-import { MetaPool } from "../contracts/meta-pool";
 import { program } from "commander";
 import { SmartContract } from "near-api-lite";
 
@@ -91,14 +90,6 @@ export function getDaoContract(DaoId?: string): SmartContract {
   return dao;
 }
 
-//------------------------------------
-export function getMetaPoolContract(): MetaPool {
-  //create contract proxy
-  const metaPool = new MetaPool(program.opts().contract)
-  configSigner(metaPool, OPERATOR_ACCOUNT);
-  return metaPool;
-}
-
 //Return 'near' if mainnet or testnet if 'testnet
 export function getNetworkEnding(network:string):string{
   if(network=='mainnet'){
@@ -108,11 +99,6 @@ export function getNetworkEnding(network:string):string{
   }else{
     throw new Error("Network not available");
   }
-}
-
-export function showContractAndOperator(metaPool: MetaPool): void {
-  console.log("---");
-  console.log(`contract:${metaPool.contract_account}, operator:${metaPool.signer}`);
 }
 
 

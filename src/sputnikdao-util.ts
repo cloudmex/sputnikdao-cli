@@ -2,14 +2,11 @@
 
 import { program } from "commander";
 
-import { listSp, listUsers } from "./commands/list.js";
-import { listValidators } from "./commands/list-validators.js";
-import { sp_busy } from "./commands/sp_busy.js";
 
 import { inspect } from "util";
 import * as near from "near-api-lite/lib/near-rpc.js";
 import { formatLargeNumbers, showNumbers } from "./util/format-near.js";
-import { getDaoContract, getMetaPoolContract, METAPOOL_CONTRACT_ACCOUNT, showContractAndOperator } from "./util/setup.js";
+import { getDaoContract, METAPOOL_CONTRACT_ACCOUNT} from "./util/setup.js";
 import { deleteFCAK } from "./commands/delete-keys.js";
 import { testCall } from "./commands/test-call.js";
 import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeCall, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove } from "./commands/dao.js";
@@ -30,6 +27,11 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   .option("--purpose <purpose>", "Give a purpose to DAO","Sputnik V2 DAO")
   .option("-env <env>", "Use account as signer","testnet")
   .action(daoCreate);
+
+  program
+    .command("info")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .action(daoInfo);
 
   const dao_propose = program.command("proposal");
   
@@ -55,38 +57,10 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--env <env>", "Choose an environment, options: testnet, mainnet","testnet")
     .action(daoProposeCall); 
 
-  program
-    .command("get-extra")
-    .action(async () => {
-      const metaPool = getMetaPoolContract();
-      console.log("transfer_extra_balance_accumulated=", await metaPool.transfer_extra_balance_accumulated());
-    });
-
-  program
-    .command("pause")
-    .action(async () => {
-      const metaPool = getMetaPoolContract();
-      await metaPool.pause_staking();
-    });
-
-  program
-    .command("un-pause")
-    .action(async () => {
-      const metaPool = getMetaPoolContract();
-      await metaPool.un_pause_staking();
-    });
 
   // dao command and sub-commands
 
   const dao = program.command("dao");
-
-  dao
-    .command("create")
-    .action(daoCreate);
-
-  dao
-    .command("info")
-    .action(daoInfo);
 
   dao
     .command("init")
@@ -116,7 +90,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
 
   const dao_list = program
     .command("list")
-    .description("list items from metapool's DAO");
+    .description("list items from DAO");
 
   dao_list
     .command("proposals")

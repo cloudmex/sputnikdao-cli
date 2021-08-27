@@ -101,9 +101,9 @@ export async function daoInit(): Promise<void> {
 
 }
 
-export async function daoInfo(): Promise<void> {
+export async function daoInfo(options: Record<string, any>): Promise<void> {
 
-  const dao = getDaoContract();
+  const dao = getDaoContract(options.daoAcc);
   console.log("location: ", dao.contract_account);
 
   const result = await dao.view("get_policy");
