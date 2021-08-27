@@ -9,9 +9,13 @@ You can follow the discussion and add your own ideas and colaboration in [the po
 ## User stories 
 
 ### Creating a DAO
-Dave wants to create a new sputnik DAO without using UI or deploying the contract by himself, instead he opt for sputnikdao-cli as the option to deploy sputnik. He add the name, councils members and environment. 
+Dave wants to create a new sputnik DAO without using UI or deploying the contract by himself, instead he opt for sputnik as the option to deploy sputnik. He add the name, councils members and environment. 
 
 Dave obtains from CLI the info about the recent created sputnik DAO.
+**Change commands to sputnik**
+```bash
+sputnik create mydao_alan2 alantest.testnet --accountId alan1.testnet
+```
 
 ### Adding a proposal
 
