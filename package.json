@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc -b -verbose",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "echo \"No test specified\""
   },
   "keywords": [
     "near",
