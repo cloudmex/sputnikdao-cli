@@ -1,6 +1,20 @@
 # sputnikdao - Tools for managing Sputnik DAO v2
 Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 2 brings a wide variety of funcionalities that enhance the meaning of a DAO in NEAR. This CLI tool helps users to interact with this functionalities.
 
+## Table of contents
+- [sputnikdao - Tools for managing Sputnik DAO v2](#sputnikdao---tools-for-managing-sputnik-dao-v2)
+  - [Table of contents](#table-of-contents)
+  - [Post in Governance Forum](#post-in-governance-forum)
+    - [Installation and requirements](#installation-and-requirements)
+  - [Overview](#overview)
+  - [User stories](#user-stories)
+    - [Creating a DAO](#creating-a-dao)
+    - [Adding a proposal](#adding-a-proposal)
+    - [Listing proposals](#listing-proposals)
+    - [Voting a proposal](#voting-a-proposal)
+    - [Get DAO info](#get-dao-info)
+    - [Switching network](#switching-network)
+  - [Credits](#credits)
 
 ## Post in Governance Forum
 You can follow the discussion and add your own ideas and colaboration in [the post at NEAR Gov Forum](https://gov.near.org/t/project-sputnikdao-tools-for-managing-sputnik-dao-v2-at-terminal/4726)
@@ -15,14 +29,17 @@ You can follow the discussion and add your own ideas and colaboration in [the po
 ## Overview
 
 _Click on a command for more information and examples._
-
+| Ready commands |
 | Command                                               | Description                                                                                                                            |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Deploy a new sputnik DAO**                          |                                                                                                                                        |
 | [`sputnikdao create`](#near-login)                    | stores a full access key locally using [NEAR Wallet](https://wallet.testnet.near.org/)                                                 |                                                                                             |
 | **VOTE**                                              |                                                                                                                                        |
 | [`sputnikdao vote `](#near-create-account)            | vote a proposal
-
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Command                                               | Description                                                                                                                            |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+|Pending of development/Under testing |
 
 ## User stories 
 
@@ -74,7 +91,7 @@ sputnikdao vote unapprove $PROPOSAL_ID --daoAcc $DAO_ACC --account $SIGNER_ID
 Recover policy, periods and bond:
 
 ```bash
-sputnikdao info --daoAcc mydao_alan
+sputnikdao get_policy --daoAcc mydao_alan
 ```
 
 ### Switching network
@@ -83,6 +100,9 @@ Maria is using sputnikdao as a tool for develop NEAR DApps, she now wants to cha
 
 She now is deploying DAO functionalities to mainnet.
 
+## Following steps
+
+https://hackmd.io/lMmmRVXASuGf9Xrx75Pmlw?view
 
 ## Credits
 

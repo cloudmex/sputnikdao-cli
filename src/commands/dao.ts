@@ -112,9 +112,9 @@ export async function daoInfo(options: Record<string, any>): Promise<void> {
 
 }
 
-export async function daoGetPolicy(): Promise<void> {
+export async function daoGetPolicy(options: Record<string, any>): Promise<void> {
 
-  const dao = getDaoContract();
+  const dao = getDaoContract(options.daoAcc);
 
   const result = await dao.view("get_policy");
 
@@ -163,7 +163,7 @@ export async function daoListProposals(options: Record<string, any>): Promise<vo
   console.log(inspect(result, false, 5, true));
 
 }
-export async function daoProposePayout(amount:number, options: Record<string, any>): Promise<void> {
+export async function daoProposePayout( amount:number, options: Record<string, any>): Promise<void> {
   /*let env:string='';
   let dao_factory:string='';
   console.log(options);
@@ -191,6 +191,57 @@ export async function daoProposePayout(amount:number, options: Record<string, an
           receiver_id: options.accountId,
           token_id: "", //default for basic $NEAR
           amount: yocto_amount,
+        }
+      }
+    }
+  }, 200, ONE_NEAR.toString());
+
+  console.log(inspect(addProposalCall, false, 5, true));
+
+}
+export async function daoProposeTokenFarm(name:string, amount:number, options: Record<string, any>): Promise<void> {
+
+  let dao_account = options.daoAcc;
+  const dao = getDaoContract(dao_account);
+  let yocto_amount = ntoy(amount);
+  console.log(yocto_amount);
+  const addProposalCall = await dao.call("add_proposal", {
+    proposal: {
+      //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
+      description: "Farming "+ amount +"units of a new token: " + name ,
+      kind: {
+        FunctionCall: {
+          receiver_id: "tokenfactory.testnet",
+          //method_name: "get_proposals",
+          //args: { from_index: 0, limit: 50 },
+          actions: [
+            {
+              method_name: "create_token", 
+              args : encodeBase64(decodeUTF8(options.Args)), 
+              deposit: "5000000000000000000000000",
+              gas: "150000000000000"
+            }
+          ]
+        }
+      }
+    }
+  }, 200, ONE_NEAR.toString());
+
+  console.log(inspect(addProposalCall, false, 5, true));
+
+}
+export async function daoProposeCouncil(council:string, options: Record<string, any>): Promise<void> {
+
+  let dao_account = options.daoAcc;
+  const dao = getDaoContract(dao_account);
+  const addProposalCall = await dao.call("add_proposal", {
+    proposal: {
+      //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
+      description: "Adding a new council",
+      kind: {
+        AddMemberToRole: {
+          member_id: council,
+          role: "council"
         }
       }
     }
@@ -329,6 +380,26 @@ export async function daoVoteApprove(id: string, options: Record<string, any>): 
 
 //TEMP DEBUG to re-enable as InProgress a proposal approve but failed in execution
 export async function daoVoteUnapprove(id: string, options: Record<string, any>): Promise<void> {
+  //note: all commander args are strings
+
+  const dao = getDaoContract(options.daoAcc);
+  if (options.account) {
+    configSigner(dao, options.account);
+  }
+
+  const proposalId = Number(id);
+  if (proposalId.toString() !== id) {
+    throw Error(`invalid number: ${id} => ${proposalId}`);
+  }
+
+  //near call $SPUTNIK_ID act_proposal '{"id": 0, "action": "VoteApprove"}' --accountId testmewell.testnet
+  const result = await dao.call("act_proposal", { id: proposalId, action: "VoteReject" });
+
+  console.log(inspect(result || "success", false, 5, true));
+
+}
+
+export async function daoVoteReject(id: string, options: Record<string, any>): Promise<void> {
   //note: all commander args are strings
 
   const dao = getDaoContract(options.daoAcc);
