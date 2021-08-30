@@ -1,6 +1,6 @@
 {
   "name": "sputnikdao",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Sputnik DAO CLI",
   "main": "dist/sputnikdao-util.js",
   "bin": "dist/sputnikdao-util.js",
