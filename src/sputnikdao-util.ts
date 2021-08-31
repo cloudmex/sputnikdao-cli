@@ -9,7 +9,7 @@ import { formatLargeNumbers, showNumbers } from "./util/format-near.js";
 import { getDaoContract, METAPOOL_CONTRACT_ACCOUNT} from "./util/setup.js";
 import { deleteFCAK } from "./commands/delete-keys.js";
 import { testCall } from "./commands/test-call.js";
-import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove, daoVoteReject } from "./commands/dao.js";
+import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove, daoVoteRemove } from "./commands/dao.js";
 import { SmartContract } from "near-api-lite";
 
 main(process.argv, process.env);
@@ -31,54 +31,58 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   program
     .command("info")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--accountId <accountId>", "Use account as signer")
     .action(daoInfo);
 
   program
     .command("get_policy")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--accountId <accountId>", "Use account as signer")
+    //Pending of develop update policy
     .option("--update <update>", "Update using new policy")
     .action(daoGetPolicy);
 
   const dao_propose = program.command("proposal");
   
-  dao_propose
-    .command("upgrade <wasmFile>")
-    .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
-    .description("propose upgrading the meta-pool contract code")
-    .action(daoProposeUpgrade);
-  
-  dao_propose
-    .command("payout <amount>")
-    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
-    .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
-    .option("-env <env>", "Use account as signer","testnet")
-    .description("Add a new proposal for payout")
-    .action(daoProposePayout);
-  
-  dao_propose
-    .command("council <council>")
-    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
-    .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
-    .option("--remove", "Indicate to remove the council member")
-    .option("-env <env>", "Use account as signer","testnet")
-    .description("Add a new proposal for payout")
-    .action(daoProposeCouncil);
+    dao_propose
+      .command("upgrade <wasmFile>")
+      .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
+      .description("propose upgrading the meta-pool contract code")
+      .action(daoProposeUpgrade);
+    
+    dao_propose
+      .command("payout <amount>")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
+      .option("-env <env>", "Use account as signer","testnet")
+      .description("Add a new proposal for payout")
+      .action(daoProposePayout);
+    
+    dao_propose
+      .command("council <council>")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
+      .option("--remove", "Indicate to remove the council member")
+      .option("--role <role>", "Pick a different role to council member","council")
+      .option("-env <env>", "Use account as signer","testnet")
+      .description("Add a new proposal for payout")
+      .action(daoProposeCouncil);
 
-  dao_propose
-    .command("tokenfarm <name> <amount>")
-    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
-    .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
-    .option("-env <env>", "Use account as signer","testnet")
-    .description("Add a new proposal for payout")
-    .action(daoProposePayout);
+    dao_propose
+      .command("tokenfarm <name> <amount>")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
+      .option("-env <env>", "Use account as signer","testnet")
+      .description("Add a new proposal for payout")
+      .action(daoProposePayout);
 
-  dao_propose
-    .command("call <DaoId> <MethodCall> <ArgsCall>")
-    .description("propose calling to a SC method")
-    .option("--factoryId <factoryId>","Choose a differente DAO factory: dao.<factoryId>.testnet","sputnikv2")
-    .option("--targetId <targetId>","Choose target smartcontract for calling")
-    .option("--env <env>", "Choose an environment, options: testnet, mainnet","testnet")
-    .action(daoProposeCall); 
+    dao_propose
+      .command("call <DaoId> <MethodCall> <ArgsCall>")
+      .description("propose calling to a SC method")
+      .option("--factoryId <factoryId>","Choose a differente DAO factory: dao.<factoryId>.testnet","sputnikv2")
+      .option("--targetId <targetId>","Choose target smartcontract for calling")
+      .option("--env <env>", "Choose an environment, options: testnet, mainnet","testnet")
+      .action(daoProposeCall); 
 
 
   // dao command and sub-commands
@@ -98,21 +102,22 @@ async function main(argv: string[], _env: Record<string, unknown>) {
 
   dao_vote
     .command("approve <proposal-index>")
-    .option("-a, --accountId <account>", "use account as signer")
+    .option("-a, --accountId <accountId>", "use account as signer")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .action(daoVoteApprove);
 
   dao_vote
     .command("unapprove <proposal-index>")
-    .option("-a, --accountId <account>", "use account as signer")
+    .option("-a, --accountId <accountId>", "use account as signer")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .action(daoVoteUnapprove);
 
+    //Pending of rename this command to removal or similar
     dao_vote
-      .command("reject <proposal-index>")
-      .option("-a, --accountId <account>", "use account as signer")
+      .command("remove <proposal-index>")
+      .option("-a, --accountId <accountId>", "use account as signer")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
-      .action(daoVoteReject);
+      .action(daoVoteRemove);
 
   const dao_list = program
     .command("list")
@@ -122,6 +127,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .command("proposals")
     .description("list proposals")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("-a, --accountId <accountId>", "use account as signer")
     .action(daoListProposals);
 
   dao_list

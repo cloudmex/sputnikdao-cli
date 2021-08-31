@@ -103,7 +103,7 @@ export async function daoInit(): Promise<void> {
 
 export async function daoInfo(options: Record<string, any>): Promise<void> {
 
-  const dao = getDaoContract(options.daoAcc);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
   console.log("location: ", dao.contract_account);
 
   const result = await dao.view("get_policy");
@@ -114,7 +114,7 @@ export async function daoInfo(options: Record<string, any>): Promise<void> {
 
 export async function daoGetPolicy(options: Record<string, any>): Promise<void> {
 
-  const dao = getDaoContract(options.daoAcc);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
 
   const result = await dao.view("get_policy");
 
@@ -156,7 +156,7 @@ export async function daoProposeUpgrade(wasmFile: string, options: Record<string
 
 export async function daoListProposals(options: Record<string, any>): Promise<void> {
 
-  const dao = getDaoContract(options.daoAcc);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
 
   const result = await dao.view("get_proposals", { from_index: 0, limit: 50 });
 
@@ -179,7 +179,7 @@ export async function daoProposePayout( amount:number, options: Record<string, a
   if(!options.daoAcc){ throw new Error("It's required DAO name as <DaoName>.daofactory.testnet"); }
   let dao_account = options.daoAcc+'.'+dao_factory+'.'+env*/
   let dao_account = options.daoAcc;
-  const dao = getDaoContract(dao_account);
+  const dao = getDaoContract(dao_account,options.account);
   let yocto_amount = ntoy(amount);
   console.log(yocto_amount);
   const addProposalCall = await dao.call("add_proposal", {
@@ -232,20 +232,35 @@ export async function daoProposeTokenFarm(name:string, amount:number, options: R
 }
 export async function daoProposeCouncil(council:string, options: Record<string, any>): Promise<void> {
 
-  let dao_account = options.daoAcc;
-  const dao = getDaoContract(dao_account);
-  const addProposalCall = await dao.call("add_proposal", {
-    proposal: {
-      //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
-      description: "Adding a new council",
-      kind: {
-        AddMemberToRole: {
-          member_id: council,
-          role: "council"
+  const dao = getDaoContract(options.daoAcc,options.accountId);
+  //In case that remove option was called
+  let addProposalCall;
+  if(options.remove){
+    addProposalCall = await dao.call("add_proposal", {
+      proposal: {
+        description: "Remove council member",
+        kind: {
+          RemoveMemberFromRole: {
+            member_id: council,
+            role: options.role
+          }
         }
       }
-    }
-  }, 200, ONE_NEAR.toString());
+    }, 200, ONE_NEAR.toString());
+
+  }else{
+    addProposalCall = await dao.call("add_proposal", {
+      proposal: {
+        description: "Adding a new council",
+        kind: {
+          AddMemberToRole: {
+            member_id: council,
+            role: options.role
+          }
+        }
+      }
+    }, 200, ONE_NEAR.toString());
+  }
 
   console.log(inspect(addProposalCall, false, 5, true));
 
@@ -266,7 +281,7 @@ export async function daoProposeCall(DaoId:string, MethodCall: string, ArgsCall:
   }
   let dao_account = options.daoAcc+'.'+dao_factory+'.'+env*/
   let dao_account = options.daoAcc;
-  const dao = getDaoContract(dao_account);
+  const dao = getDaoContract(options.daoAcc,options.account);
 
   console.log(ArgsCall);
   console.log(MethodCall);
@@ -361,9 +376,9 @@ export async function daoUpgrade(): Promise<void> {
 export async function daoVoteApprove(id: string, options: Record<string, any>): Promise<void> {
   //note: all commander args are strings
 
-  const dao = getDaoContract(options.daoAcc);;
-  if (options.account) {
-    configSigner(dao, options.account);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
+  if (options.accountId) {
+    configSigner(dao, options.accountId);
   }
 
   const proposalId = Number(id);
@@ -382,9 +397,9 @@ export async function daoVoteApprove(id: string, options: Record<string, any>): 
 export async function daoVoteUnapprove(id: string, options: Record<string, any>): Promise<void> {
   //note: all commander args are strings
 
-  const dao = getDaoContract(options.daoAcc);
-  if (options.account) {
-    configSigner(dao, options.account);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
+  if (options.accountId) {
+    configSigner(dao, options.accountId);
   }
 
   const proposalId = Number(id);
@@ -399,12 +414,12 @@ export async function daoVoteUnapprove(id: string, options: Record<string, any>)
 
 }
 
-export async function daoVoteReject(id: string, options: Record<string, any>): Promise<void> {
+export async function daoVoteRemove(id: string, options: Record<string, any>): Promise<void> {
   //note: all commander args are strings
 
-  const dao = getDaoContract(options.daoAcc);
-  if (options.account) {
-    configSigner(dao, options.account);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
+  if (options.accountId) {
+    configSigner(dao, options.accountId);
   }
 
   const proposalId = Number(id);

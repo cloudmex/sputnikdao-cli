@@ -76,17 +76,12 @@ export function multiConfigSigner(contract: SmartContract, signerAccountId: stri
   contract.signer_private_key = credentials.private_key;
 }
 //------------------------------------
-export function getDaoContract(DaoId?: string): SmartContract {
+export function getDaoContract(DaoId: string="metadao", SignerId: string="alanfake.testnet"): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
-  let dao_acc:string='';
-  if (DaoId){
-    dao_acc=DaoId+".sputnikv2.testnet";
-  }else{
-    dao_acc="metadao.sputnikv2.testnet";
-  }
+  let dao_acc:string=DaoId+".sputnikv2.testnet";
 
   const dao = new SmartContract(dao_acc);
-  configSigner(dao, "alan1.testnet");
+  configSigner(dao, SignerId);
   return dao;
 }
 

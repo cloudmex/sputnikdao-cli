@@ -14,6 +14,7 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
     - [Voting a proposal](#voting-a-proposal)
     - [Get DAO info](#get-dao-info)
     - [Switching network](#switching-network)
+  - [Following steps](#following-steps)
   - [Credits](#credits)
 
 ## Post in Governance Forum
@@ -49,7 +50,7 @@ Dave wants to create a new sputnik DAO without using UI or deploying the contrac
 Dave obtains from CLI the info about the recent created sputnik DAO.
 
 ```bash
-sputnik create mydao_alan2 alantest.testnet --accountId alan1.testnet
+sputnikdao create mydao_alan2 alantest.testnet --accountId alan1.testnet
 ```
 
 ### Adding a proposal
