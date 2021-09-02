@@ -9,7 +9,7 @@ import { formatLargeNumbers, showNumbers } from "./util/format-near.js";
 import { getDaoContract, METAPOOL_CONTRACT_ACCOUNT} from "./util/setup.js";
 import { deleteFCAK } from "./commands/delete-keys.js";
 import { testCall } from "./commands/test-call.js";
-import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove, daoVoteRemove } from "./commands/dao.js";
+import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, daoProposePolicy, daoProposeTokenFarm } from "./commands/dao.js";
 import { SmartContract } from "near-api-lite";
 
 main(process.argv, process.env);
@@ -57,6 +57,14 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("-env <env>", "Use account as signer","testnet")
       .description("Add a new proposal for payout")
       .action(daoProposePayout);
+    //Method for upgrading DAO policy
+    dao_propose
+      .command("policy <policyFile>")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
+      .option("-env <env>", "Use account as signer","testnet")
+      .description("Add a new proposal for payout")
+      .action(daoProposePolicy);
     
     dao_propose
       .command("council <council>")
@@ -69,12 +77,12 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .action(daoProposeCouncil);
 
     dao_propose
-      .command("tokenfarm <name> <amount>")
+      .command("tokenfarm <token_name> <token_symbol> <token_amount>")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-env <env>", "Use account as signer","testnet")
       .description("Add a new proposal for payout")
-      .action(daoProposePayout);
+      .action(daoProposeTokenFarm);
 
     dao_propose
       .command("call <DaoId> <MethodCall> <ArgsCall>")

@@ -76,7 +76,7 @@ export function multiConfigSigner(contract: SmartContract, signerAccountId: stri
   contract.signer_private_key = credentials.private_key;
 }
 //------------------------------------
-export function getDaoContract(DaoId: string="metadao", SignerId: string="alanfake.testnet"): SmartContract {
+export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet"): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
   let dao_acc:string=DaoId+".sputnikv2.testnet";
 
