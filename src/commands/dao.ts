@@ -66,7 +66,7 @@ export async function daoCreate(dao_name: string, council: string, options: Reco
     {
       name: dao_name,
       args: dao_params_base_64
-    }, 150, ntoy(5));
+    }, 150, ntoy(10));
 
   //near call $CONTRACT_ID create "{\"name\": \"genesis\", \"args\": \"$ARGS\"}"  --accountId $CONTRACT_ID --amount 5 --gas 150000000000000
 
@@ -211,7 +211,7 @@ export async function daoProposeTokenFarm(token_name: string,token_symbol: strin
   console.log(yocto_amount);
   const token_args = { 
     "args": { 
-      "owner_id": dao_acc, 
+      "owner_id": options.accountId, 
       "total_supply": yocto_amount, 
       "metadata": { 
         "spec": "ft-1.0.0", 

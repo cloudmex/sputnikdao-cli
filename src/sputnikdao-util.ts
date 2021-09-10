@@ -9,6 +9,7 @@ import { formatLargeNumbers, showNumbers } from "./util/format-near.js";
 import { getDaoContract, METAPOOL_CONTRACT_ACCOUNT} from "./util/setup.js";
 import { deleteFCAK } from "./commands/delete-keys.js";
 import { testCall } from "./commands/test-call.js";
+import { getTokenBalance, stakingContract, getStakingContract } from "./commands/staking-contract";
 import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, daoProposePolicy, daoProposeTokenFarm } from "./commands/dao.js";
 import { SmartContract } from "near-api-lite";
 
@@ -41,6 +42,34 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     //Pending of develop update policy
     .option("--update <update>", "Update using new policy")
     .action(daoGetPolicy);
+
+  // Create and initialize a new staking contract
+  // Using token_id and dao_id for setup
+  program
+    .command("staking-contract <token_id>")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--key <key>", "Recover NEAR Key using 'near keys <accountId>' command")
+    .option("--accountId <accountId>", "Use account as signer")
+    .action(stakingContract);
+
+  program
+    .command("get-staking")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--key <key>", "Recover NEAR Key using 'near keys <accountId>' command")
+    .option("--accountId <accountId>", "Use account as signer")
+    .action(getStakingContract);
+  program
+      .command("token-balance <token_id>")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--accountId <accountId>", "Use account as signer")
+      .action(getTokenBalance);
+/*
+  program
+    .command("staking-init <staking_id> <token_id>")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--accountId <accountId>", "Use account as signer")
+    .action(initStakingContract);
+    */
 
   const dao_propose = program.command("proposal");
   
