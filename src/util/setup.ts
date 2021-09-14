@@ -41,7 +41,7 @@ export type Credentials = { account_id: string, private_key: string };
 //--------------------------
 export function getCredentials(accountId: string): Credentials {
   const homedir = os.homedir();
-  const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/default/" + accountId + ".json");
+  const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/testnet/" + accountId + ".json");
   const credentialsString = fs.readFileSync(CREDENTIALS_FILE).toString();
   const result: Credentials = JSON.parse(credentialsString);
   if (!result.private_key) {
