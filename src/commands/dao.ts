@@ -181,7 +181,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
   if(!options.daoAcc){ throw new Error("It's required DAO name as <DaoName>.daofactory.testnet"); }
   let dao_account = options.daoAcc+'.'+dao_factory+'.'+env*/
   let dao_account = options.daoAcc;
-  const dao = getDaoContract(dao_account, options.account);
+  const dao = getDaoContract(dao_account,options.accountId);
   let yocto_amount = ntoy(amount);
   console.log(yocto_amount);
   const addProposalCall = await dao.call("add_proposal", {
