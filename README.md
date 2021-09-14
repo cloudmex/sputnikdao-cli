@@ -14,6 +14,7 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
     - [Voting a proposal](#voting-a-proposal)
     - [Get DAO info](#get-dao-info)
     - [Switching network](#switching-network)
+  - [Following steps](#following-steps)
   - [Credits](#credits)
 
 ## Post in Governance Forum
@@ -34,6 +35,11 @@ _Click on a command for more information and examples._
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Deploy a new sputnik DAO**                          |                                                                                                                                        |
 | [`sputnikdao create`](#near-login)                    | stores a full access key locally using [NEAR Wallet](https://wallet.testnet.near.org/)                                                 |                                                                                             |
+| **Add proposal**                                              |                                                                                                                                        |
+| [`sputnikdao proposal payout <amount>`](#near-create-account)            | Request a payout
+| [`sputnikdao proposal council <name>`](#near-create-account)            | Add a council member/Also can propose to remove
+| **Listing proposals**                                              |                                                                                                                                        |
+| [`sputnikdao list proposals`](#near-create-account)            | List proposals
 | **VOTE**                                              |                                                                                                                                        |
 | [`sputnikdao vote `](#near-create-account)            | vote a proposal
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
@@ -49,7 +55,7 @@ Dave wants to create a new sputnik DAO without using UI or deploying the contrac
 Dave obtains from CLI the info about the recent created sputnik DAO.
 
 ```bash
-sputnik create mydao_alan2 alantest.testnet --accountId alan1.testnet
+sputnikdao create mydao_alan2 alantest.testnet --accountId alan1.testnet
 ```
 
 ### Adding a proposal
