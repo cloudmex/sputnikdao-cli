@@ -41,7 +41,7 @@ export type Credentials = { account_id: string, private_key: string };
 //--------------------------
 export function getCredentials(accountId: string): Credentials {
   const homedir = os.homedir();
-  const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/default/" + accountId + ".json");
+  const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/testnet/" + accountId + ".json");
   const credentialsString = fs.readFileSync(CREDENTIALS_FILE).toString();
   const result: Credentials = JSON.parse(credentialsString);
   if (!result.private_key) {
@@ -76,7 +76,7 @@ export function multiConfigSigner(contract: SmartContract, signerAccountId: stri
   contract.signer_private_key = credentials.private_key;
 }
 //------------------------------------
-export function getDaoContract(DaoId: string="metadao", SignerId: string="alanfake.testnet"): SmartContract {
+export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet"): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
   let dao_acc:string=DaoId+".sputnikv2.testnet";
 
@@ -85,6 +85,26 @@ export function getDaoContract(DaoId: string="metadao", SignerId: string="alanfa
   return dao;
 }
 
+export function getFactoryContract(FactoryContract: string="generic.testnet", SignerId: string="alanfake.testnet"): SmartContract {
+  //const dao = new SmartContract("metapool.sputnik2.testnet");
+
+  const SC = new SmartContract(FactoryContract);
+  configSigner(SC, SignerId);
+  return SC;
+}
+export function getStakingContract(stakingContract: string, SignerId: string="alanfake.testnet"): SmartContract {
+  //const dao = new SmartContract("metapool.sputnik2.testnet");
+  const stakingcontract = stakingContract+".generic.testnet"
+  const SC = new SmartContract(stakingcontract);
+  configSigner(SC, SignerId);
+  return SC;
+}
+export function getSmartContract(contract: string="sputnikv2.testnet", SignerId: string="alanfake.testnet"): SmartContract {
+  //const dao = new SmartContract("metapool.sputnik2.testnet");
+  const SC = new SmartContract(contract);
+  configSigner(SC, SignerId);
+  return SC;
+}
 //Return 'near' if mainnet or testnet if 'testnet
 export function getNetworkEnding(network:string):string{
   if(network=='mainnet'){
@@ -95,7 +115,11 @@ export function getNetworkEnding(network:string):string{
     throw new Error("Network not available");
   }
 }
-
+export function getRandomInt(min:number, max:number) : number{
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min; 
+}
 
 //utility
 export async function sleep(ms: number): Promise<void> {
