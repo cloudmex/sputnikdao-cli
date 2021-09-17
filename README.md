@@ -7,13 +7,14 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
   - [Post in Governance Forum](#post-in-governance-forum)
     - [Installation and requirements](#installation-and-requirements)
   - [Overview](#overview)
-  - [| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |](#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------)
     - [`sputnikdao create`](#sputnikdao-create)
     - [`sputnikdao proposal payout`](#sputnikdao-proposal-payout)
     - [`sputnikdao proposal policy`](#sputnikdao-proposal-policy)
     - [`sputnikdao proposal council`](#sputnikdao-proposal-council)
     - [`sputnikdao proposal tokenfarm`](#sputnikdao-proposal-tokenfarm)
-    - [`sputnikdao proposal tokenfarm`](#sputnikdao-proposal-tokenfarm-1)
+    - [`sputnikdao proposal addBounty`](#sputnikdao-proposal-addbounty)
+    - [`sputnikdao get_bounties`](#sputnikdao-get_bounties)
+    - [`Under development`](#under-development)
   - [User stories](#user-stories)
     - [Creating a DAO](#creating-a-dao)
     - [Adding a proposal](#adding-a-proposal)
@@ -21,7 +22,6 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
     - [Voting a proposal](#voting-a-proposal)
     - [Get DAO info](#get-dao-info)
     - [Switching network](#switching-network)
-  - [Following steps](#following-steps)
   - [Credits](#credits)
 
 ## Post in Governance Forum
@@ -38,22 +38,26 @@ You can follow the discussion and add your own ideas and colaboration in [the po
 
 _Click on a command for more information and examples._
 | Ready commands |
-| Command                                               | Description                                                                                                                            |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Deploy a new sputnik DAO**                          |                                                                                                                                        |
-| [`sputnikdao create`](#near-login)                    | stores a full access key locally using [NEAR Wallet](https://wallet.testnet.near.org/)                                                 |                                                                                             |
-| **Add proposal**                                              |                                                                                                                                        |
-| [`sputnikdao proposal payout <amount>`](#near-create-account)            | Request a payout
-| [`sputnikdao proposal council <name>`](#near-create-account)            | Add a council member/Also can propose to remove
-| **Listing proposals**                                              |                                                                                                                                        |
-| [`sputnikdao list proposals`](#near-create-account)            | List proposals
-| **VOTE**                                              |                                                                                                                                        |
-| [`sputnikdao vote `](#near-create-account)            | vote a proposal
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Command                                               | Description                                                                                                                            |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
----
+| Command                                               | Description                                             |
+| ----------------------------------------------------- | ------------------------------------------------------- |
+| **Deploy a new sputnik DAO**                          |                                                         |
+| [`sputnikdao create`](#sputnikdao-create)             | Creates a new Sputnik V2 DAO in testnet                 |                                                                                             
+| **Add proposal**                                      |                                                         |
+| [`sputnikdao proposal payout`](#sputnikdao-proposal-payout)            | Request a payout                       |
+| [`sputnikdao proposal policy`](#sputnikdao-proposal-policy)            | Upgrade DAO policy                     |
+| [`sputnikdao proposal council`](#sputnikdao-proposal-council)            | Add a council member/Also can propose to remove|
+| [`sputnikdao proposal tokenfarm`](#sputnikdao-proposal-tokenfarm)            | Farm a new fungible token|
+| [`sputnikdao proposal addBounty`](#sputnikdao-proposal-addbounty)            | Add a bounty |
+| **VOTE**                                              |                                        |                                                                                                
+| [`sputnikdao vote approve <proposal_id> `](#voting-a-proposal)           | Approve a proposal |
+| [`sputnikdao vote unapprove <proposal_id> `](#voting-a-proposal)            | Unapprove a proposal |
+| **Listing**                                              |                      |                                                                                                                  
+| [`sputnikdao list proposals`](#near-create-account)            | List proposals|
+| [`sputnikdao list get_bounties`](#sputnikdao-get_bounties)           | List bounties |
 
+
+
+---
 ### `sputnikdao create`
 
 > Create a new Sputnik V2 DAO.
@@ -198,40 +202,6 @@ result.status.SuccessValue: 1
 
 </p>
 </details>
-
----
-
-### `sputnikdao proposal tokenfarm`
-
-> Creates a proposal for farming a new token.
-
--   arguments: `token_name` `token_symbol` `token_amount`
--   options: `daoAcc` `accountId` `remove` `role`
-
-**Example:**
-
-```bash
-DAO_ACCOUNT=mynewdao1
-SIGNER_ACCOUNT=alan1.testnet
-COUNCIL_ACCOUNT=alantest.testnet
-TOKEN_NAME=alan_token
-TOKEN_SYM=ALAN
-TOKEN_AMOUNT=100000
-sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
-```
-
-<details>
-<summary> <strong>Example Response</strong> </summary>
-<p>
-
-```
-result.status.SuccessValue: 1
-```
-
-</p>
-</details>
-
----
 
 ---
 
@@ -468,10 +438,6 @@ Maria is using sputnikdao as a tool for develop NEAR DApps, she now wants to cha
 She now is deploying DAO functionalities to mainnet.
 
 
-
-## Following steps
-
-https://hackmd.io/lMmmRVXASuGf9Xrx75Pmlw?view
 
 ## Credits
 
