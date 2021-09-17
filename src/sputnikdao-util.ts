@@ -10,8 +10,8 @@ import { getDaoContract, METAPOOL_CONTRACT_ACCOUNT} from "./util/setup.js";
 import { deleteFCAK } from "./commands/delete-keys.js";
 import { testCall } from "./commands/test-call.js";
 import { getTokenBalance, stakingContract, getStakingContract } from "./commands/staking-contract";
-import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, daoProposePolicy, daoProposeTokenFarm } from "./commands/dao.js";
-import {daoAddBounty, daoGetBounties,daoBountyClaim} from "./commands/bounties.js";
+import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoInit, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, daoProposePolicy, daoProposeTokenFarm } from "./commands/dao.js";
+import {daoAddBounty, daoGetBounties,daoBountyClaim, daoBountyGiveup, daoBountyDone} from "./commands/bounties.js";
 import { SmartContract } from "near-api-lite";
 
 main(process.argv, process.env);
@@ -35,6 +35,13 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("--accountId <accountId>", "Use account as signer")
     .action(daoInfo);
+
+  
+
+  program
+    .command("openui")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .action(daoUI);
 
   program
     .command("get_policy")
@@ -80,15 +87,29 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .action(daoGetBounties);
 
   program
-    .command("bounty_claim <id>")
-    .description("get a list of bounties")
+    .command("bounty_claim <idbounty>")
+    .description("claim a bounty")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-a, --accountId <accountId>", "use account as signer")
     .action(daoBountyClaim);
+
+  program
+    .command("bounty_giveup <idBounty>")
+    .description("give up to the bounty")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("-a, --accountId <accountId>", "use account as signer")
+    .action(daoBountyGiveup);
     
 
   const dao_propose = program.command("proposal");
   
+    dao_propose
+      .command("self-upgrade")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
+      .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
+      .description("propose upgrading the meta-pool contract code")
+      .action(daoProposeSelfUpgrade);
     dao_propose
       .command("upgrade <wasmFile>")
       .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
@@ -117,8 +138,16 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-env <env>", "Use account as signer","testnet")
-      .description("Add a new proposal for payout")
+      .description("Add a new proposal for Bounty")
       .action(daoAddBounty);
+
+    dao_propose
+      .command("bountyDone <id>")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
+      .option("-env <env>", "Use account as signer","testnet")
+      .description("Add a new proposal for a BountyDone")
+      .action(daoBountyDone);
     
     dao_propose
       .command("council <council>")

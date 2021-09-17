@@ -56,10 +56,30 @@ export async function daoBountyClaim( id:number, options: Record<string, any>): 
   let claims_count = 0;  
   
   if(maxtimes > claims_count){
-    console.log(inspect(result[idbounty], false, 5, true));
+    //console.log(inspect(result[idbounty], false, 5, true));
   }else{
-    console.log("All claims were done");
+    //console.log("All claims were done");
   }
+  console.log("Under development");
+}
+
+export async function daoBountyGiveup( id:number, options: Record<string, any>): Promise<void> {
+  
+  let idbounty:number = id;
+  const dao = getDaoContract(options.daoAcc,options.accountId);
+  const result = await dao.view("get_bounties", { from_index: 0, limit: 50 });
+  const maxtimes:number= parseInt(inspect(result[idbounty].times));
+  let deadline = "1000";
+  let claims_count = 0;
+  let claimId = options.claimId;  
+  
+  if(maxtimes > claims_count){
+    //console.log(inspect(result[idbounty], false, 5, true));
+  }else{
+    //console.log("All claims were done");
+  }
+
+  console.log("Under development");
   
 }
 
@@ -71,16 +91,17 @@ export async function daoBountyDone( id:number, options: Record<string, any>): P
   let claims = parseInt(options.times);
   let deadline = "1000";
   //console.log(yocto_amount);
-  const addBountyCall = await dao.call("add_proposal", {
-    proposal: {
-      description: "bounty realiced",
-      kind: {
-        BountyDone: {
-          bounty_id: id,
-          receiver_id: options.accountId,
-        }
-      }
-    }
-  }, 200, ONE_NEAR.toString());
-  console.log(inspect(addBountyCall, false, 5, true));
+  // const addBountyCall = await dao.call("add_proposal", {
+  //   proposal: {
+  //     description: "bounty realiced",
+  //     kind: {
+  //       BountyDone: {
+  //         bounty_id: id,
+  //         receiver_id: options.accountId,
+  //       }
+  //     }
+  //   }
+  // }, 200, ONE_NEAR.toString());
+  //console.log(inspect(addBountyCall, false, 5, true));
+  console.log("Under development");
 }
