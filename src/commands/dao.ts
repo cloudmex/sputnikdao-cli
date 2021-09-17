@@ -114,6 +114,12 @@ export async function daoInfo(options: Record<string, any>): Promise<void> {
 
 }
 
+export async function daoUI(options: Record<string, any>): Promise<void> {
+  require("openurl").open("https://testnet-v2.sputnik.fund/")
+  //window.open("https://testnet-v2.sputnik.fund/", "_blank");
+
+}
+
 export async function daoGetPolicy(options: Record<string, any>): Promise<void> {
 
   const dao = getDaoContract(options.daoAcc, options.accountId);
@@ -162,7 +168,11 @@ export async function daoProposeSelfUpgrade(options: Record<string, any>): Promi
   const dao = getDaoContract(options.daoAcc, options.accountId);
   if (!options.skip) {
     //store the blob
-    const resultBase58Hash = await dao.call("store_blob", wasmInfo.bytes, 200, ntoy(wasmInfo.requiredStorageNears));
+    const resultBase58Hash = await dao.call(
+      "store_blob", 
+      wasmInfo.bytes, 
+      200, 
+      ntoy(wasmInfo.requiredStorageNears));
     //console.log(inspect(resultHash, false, 5, true));
     //save hash result
     appendFileSync("./blobs.json", JSON.stringify({ 
@@ -170,20 +180,37 @@ export async function daoProposeSelfUpgrade(options: Record<string, any>): Promi
       base58Hash: resultBase58Hash 
     }));
   }
-  let dao_acc:string=options.daoAcc+".sputnikv2.testnet";
-
+  
+    //Send proposal for self upgrading DAO
   const addProposalResult = await dao.call("add_proposal", {
     proposal: {
-      description: "upgrade code of DAO",
+      description: "Self upgrade code of DAO",
       kind: {
         UpgradeSelf: {
           hash: encodeBase58(wasmInfo.hash),
         }
       }
     }
-  }, 300, ONE_NEAR.toString());
+  }, 200, ONE_NEAR.toString());
 
   console.log(inspect(addProposalResult, false, 5, true));
+  /*
+  let dao_acc:string=options.daoAcc+".sputnikv2.testnet";
+  const addProposalResult = await dao.call("add_proposal", {
+    proposal: {
+      target: dao_acc,
+      description: "upgrade code",
+      kind: {
+        UpgradeRemote: {
+          receiver_id: dao_acc,
+          method_name: "upgrade_self",
+          hash: encodeBase58(wasmInfo.hash),
+        }
+      }
+    }
+  }, 200, ONE_NEAR.toString());
+  console.log(inspect(addProposalResult, false, 5, true));
+*/
 
 }
 export async function daoListProposals(options: Record<string, any>): Promise<void> {
