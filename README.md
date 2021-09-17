@@ -233,6 +233,181 @@ result.status.SuccessValue: 1
 
 ---
 
+---
+
+### `sputnikdao proposal addBounty`
+
+> Create a proposal for a new Bounty.
+
+-   arguments: `mount`
+-   options: `times` `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal addBounty 2 --times 3 --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+1
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao get_bounties`
+
+> Get the list of all the Bounties approved in the vote politicy.
+
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao get_bounties --daoAcc mydao_canales -accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+{
+    id: 0,
+    description: 'propose a bounty',
+    token: '',
+    amount: '1000000000000000000000000',
+    times: 2,
+    max_deadline: '1000'
+  },
+{
+  id: 1,
+  description: 'propose a bounty',
+  token: '',
+  amount: '2000000000000000000000000',
+  times: 3,
+  max_deadline: '1000'
+}
+
+```
+
+</p>
+</details>
+
+<p></p>
+
+> Get the information of an specific Bounty approved in the vote politicy.
+
+-   options: `id` `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao get_bounties --id 1 --daoAcc mydao_canales -a joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+{
+  id: 1,
+  description: 'propose a bounty',
+  token: '',
+  amount: '2000000000000000000000000',
+  times: 3,
+  max_deadline: '1000'
+}
+
+```
+
+</p>
+</details>
+
+---
+
+### `Under development`
+
+> Claim a Bounty.
+
+-   arguments: `Idbounty`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal bounty_claim 1 --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+Under development
+```
+
+</p>
+</details>
+
+<p><p>
+
+> Give up for a Bounty claimed.
+
+-   arguments: `IdBounty`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal bounty_giveup 1 --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+Under development
+```
+
+</p>
+</details>
+
+<p><p>
+
+> Add a proposal for a Bounty Done.
+
+-   arguments: `Id`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal bountyDone 1 --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+Under development
+```
+
+</p>
+</details>
+
+---
+
 ## User stories 
 
 ### Creating a DAO
