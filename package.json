@@ -1,6 +1,6 @@
 {
   "name": "sputnikdao",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Sputnik DAO CLI",
   "main": "dist/sputnikdao-util.js",
   "bin": "dist/sputnikdao-util.js",
@@ -24,7 +24,8 @@
     "commander": "^7.2.0",
     "near-api-js": "^0.42.0",
     "near-api-lite": "git+https://github.com/Narwallets/near-api-lite.git",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "openurl": "^1.1.1"
   },
   "devDependencies": {
     "@types/bn.js": "^4.11.6",

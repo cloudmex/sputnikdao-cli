@@ -7,6 +7,13 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
   - [Post in Governance Forum](#post-in-governance-forum)
     - [Installation and requirements](#installation-and-requirements)
   - [Overview](#overview)
+  - [| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |](#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------)
+    - [`sputnikdao create`](#sputnikdao-create)
+    - [`sputnikdao proposal payout`](#sputnikdao-proposal-payout)
+    - [`sputnikdao proposal policy`](#sputnikdao-proposal-policy)
+    - [`sputnikdao proposal council`](#sputnikdao-proposal-council)
+    - [`sputnikdao proposal tokenfarm`](#sputnikdao-proposal-tokenfarm)
+    - [`sputnikdao proposal tokenfarm`](#sputnikdao-proposal-tokenfarm-1)
   - [User stories](#user-stories)
     - [Creating a DAO](#creating-a-dao)
     - [Adding a proposal](#adding-a-proposal)
@@ -45,7 +52,186 @@ _Click on a command for more information and examples._
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Command                                               | Description                                                                                                                            |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-|Pending of development/Under testing |
+---
+
+### `sputnikdao create`
+
+> Create a new Sputnik V2 DAO.
+
+-   arguments: `name` `council`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+COUNCIL_MEMBER=alan1.testnet
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+sputnikdao create $DAO_ACCOUNT $COUNCIL_MEMBER --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: true
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal payout`
+
+> Do a proposal requesting a payout for signer.
+
+-   arguments: `amount`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+AMOUNT=5
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+sputnikdao proposal payout $AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 0
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal policy`
+
+> Updates DAO voting policy recovering from a JSON file.
+
+-   arguments: `policyFile`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+sputnikdao proposal policy new_policy.json --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal council`
+
+> Creates a proposal for adding or removing a council member.
+
+-   arguments: `council`
+-   options: `daoAcc` `accountId` `remove` `role`
+
+**Example:**
+
+```bash
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+COUNCIL_ACCOUNT=alantest.testnet
+sputnikdao proposal council $COUNCIL_ACCOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal tokenfarm`
+
+> Creates a proposal for farming a new token.
+
+-   arguments: `token_name` `token_symbol` `token_amount`
+-   options: `daoAcc` `accountId` `remove` `role`
+
+**Example:**
+
+```bash
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+COUNCIL_ACCOUNT=alantest.testnet
+TOKEN_NAME=alan_token
+TOKEN_SYM=ALAN
+TOKEN_AMOUNT=100000
+sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal tokenfarm`
+
+> Creates a proposal for farming a new token.
+
+-   arguments: `token_name` `token_symbol` `token_amount`
+-   options: `daoAcc` `accountId` `remove` `role`
+
+**Example:**
+
+```bash
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+COUNCIL_ACCOUNT=alantest.testnet
+TOKEN_NAME=alan_token
+TOKEN_SYM=ALAN
+TOKEN_AMOUNT=100000
+sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+```
+
+</p>
+</details>
+
+---
 
 ## User stories 
 
@@ -105,6 +291,8 @@ sputnikdao get_policy --daoAcc mydao_alan
 Maria is using sputnikdao as a tool for develop NEAR DApps, she now wants to change from testnet to mainnet for putting in production his DApp, she is able to do that by indicating the option inside the command.
 
 She now is deploying DAO functionalities to mainnet.
+
+
 
 ## Following steps
 

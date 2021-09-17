@@ -1,7 +1,7 @@
-import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
+import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
+import { configSigner, multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import { option } from "commander";
@@ -114,6 +114,12 @@ export async function daoInfo(options: Record<string, any>): Promise<void> {
 
 }
 
+export async function daoUI(options: Record<string, any>): Promise<void> {
+  require("openurl").open("https://testnet-v2.sputnik.fund/")
+  //window.open("https://testnet-v2.sputnik.fund/", "_blank");
+
+}
+
 export async function daoGetPolicy(options: Record<string, any>): Promise<void> {
 
   const dao = getDaoContract(options.daoAcc, options.accountId);
@@ -156,6 +162,57 @@ export async function daoProposeUpgrade(wasmFile: string, options: Record<string
 
 }
 
+export async function daoProposeSelfUpgrade(options: Record<string, any>): Promise<void> {
+  const wasmInfo = getBlobHash(SPUTNIK_WASM_PATH);
+
+  const dao = getDaoContract(options.daoAcc, options.accountId);
+  if (!options.skip) {
+    //store the blob
+    const resultBase58Hash = await dao.call(
+      "store_blob", 
+      wasmInfo.bytes, 
+      200, 
+      ntoy(wasmInfo.requiredStorageNears));
+    //console.log(inspect(resultHash, false, 5, true));
+    //save hash result
+    appendFileSync("./blobs.json", JSON.stringify({ 
+      wasmFile: SPUTNIK_WASM_PATH, 
+      base58Hash: resultBase58Hash 
+    }));
+  }
+  
+    //Send proposal for self upgrading DAO
+  const addProposalResult = await dao.call("add_proposal", {
+    proposal: {
+      description: "Self upgrade code of DAO",
+      kind: {
+        UpgradeSelf: {
+          hash: encodeBase58(wasmInfo.hash),
+        }
+      }
+    }
+  }, 200, ONE_NEAR.toString());
+
+  console.log(inspect(addProposalResult, false, 5, true));
+  /*
+  let dao_acc:string=options.daoAcc+".sputnikv2.testnet";
+  const addProposalResult = await dao.call("add_proposal", {
+    proposal: {
+      target: dao_acc,
+      description: "upgrade code",
+      kind: {
+        UpgradeRemote: {
+          receiver_id: dao_acc,
+          method_name: "upgrade_self",
+          hash: encodeBase58(wasmInfo.hash),
+        }
+      }
+    }
+  }, 200, ONE_NEAR.toString());
+  console.log(inspect(addProposalResult, false, 5, true));
+*/
+
+}
 export async function daoListProposals(options: Record<string, any>): Promise<void> {
 
   const dao = getDaoContract(options.daoAcc, options.accountId);
@@ -242,7 +299,7 @@ export async function daoProposeTokenFarm(token_name: string,token_symbol: strin
         }
       }
     }
-  }, 200, ONE_NEAR.toString());
+  }, 100, ONE_NEAR.toString());
 
   console.log(inspect(addProposalCall, false, 5, true));
 
