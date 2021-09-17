@@ -10,6 +10,7 @@ export const hostname = os.hostname();
 export const prodMode = false;
 export const NETWORK_ID:string = prodMode ? "mainnet" : "testnet";
 network.setCurrent(NETWORK_ID);
+export const SPUTNIK_WASM_PATH:string = "res/sputnikdao2-2021-09-15.wasm";
 export const METAPOOL_CONTRACT_ACCOUNT = prodMode ? "contract3.preprod-pool.near" : "contract3.preprod-pool.testnet";
 export const OPERATOR_ACCOUNT = prodMode ? "alantests.near" : "operator.preprod-pool." + NETWORK_ID;
 export const OWNER_ACCOUNT = "alan1." + NETWORK_ID;

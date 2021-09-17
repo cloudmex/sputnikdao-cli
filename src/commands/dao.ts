@@ -1,7 +1,7 @@
-import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
+import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
+import { configSigner, multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import { option } from "commander";
@@ -156,6 +156,36 @@ export async function daoProposeUpgrade(wasmFile: string, options: Record<string
 
 }
 
+export async function daoProposeSelfUpgrade(options: Record<string, any>): Promise<void> {
+  const wasmInfo = getBlobHash(SPUTNIK_WASM_PATH);
+
+  const dao = getDaoContract(options.daoAcc, options.accountId);
+  if (!options.skip) {
+    //store the blob
+    const resultBase58Hash = await dao.call("store_blob", wasmInfo.bytes, 200, ntoy(wasmInfo.requiredStorageNears));
+    //console.log(inspect(resultHash, false, 5, true));
+    //save hash result
+    appendFileSync("./blobs.json", JSON.stringify({ 
+      wasmFile: SPUTNIK_WASM_PATH, 
+      base58Hash: resultBase58Hash 
+    }));
+  }
+  let dao_acc:string=options.daoAcc+".sputnikv2.testnet";
+
+  const addProposalResult = await dao.call("add_proposal", {
+    proposal: {
+      description: "upgrade code of DAO",
+      kind: {
+        UpgradeSelf: {
+          hash: encodeBase58(wasmInfo.hash),
+        }
+      }
+    }
+  }, 300, ONE_NEAR.toString());
+
+  console.log(inspect(addProposalResult, false, 5, true));
+
+}
 export async function daoListProposals(options: Record<string, any>): Promise<void> {
 
   const dao = getDaoContract(options.daoAcc, options.accountId);
@@ -242,7 +272,7 @@ export async function daoProposeTokenFarm(token_name: string,token_symbol: strin
         }
       }
     }
-  }, 200, ONE_NEAR.toString());
+  }, 100, ONE_NEAR.toString());
 
   console.log(inspect(addProposalCall, false, 5, true));
 
