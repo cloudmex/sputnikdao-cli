@@ -46,40 +46,29 @@ export async function daoGetBounties(options: Record<string, any>): Promise<void
   }
 }
 
-export async function daoBountyClaim( id:number, options: Record<string, any>): Promise<void> {
+export async function daoBountyClaim( id:string, options: Record<string, any>): Promise<void> {
   
-  let idbounty:number = id;
-  const dao = getDaoContract(options.daoAcc,options.accountId);
-  const result = await dao.view("get_bounties", { from_index: 0, limit: 50 });
-  const maxtimes:number= parseInt(inspect(result[idbounty].times));
   let deadline = "1000";
-  let claims_count = 0;  
-  
-  if(maxtimes > claims_count){
-    //console.log(inspect(result[idbounty], false, 5, true));
-  }else{
-    //console.log("All claims were done");
-  }
-  console.log("Under development");
+  let idbounty:number = parseInt(id);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
+  const result = await dao.call("bounty_claim",{
+      id: idbounty,
+      deadline: deadline,
+  }, 200, ONE_NEAR.toString());
+  console.log(result);
+  //console.log("Under development");
 }
 
-export async function daoBountyGiveup( id:number, options: Record<string, any>): Promise<void> {
+export async function daoBountyGiveup( id:string, options: Record<string, any>): Promise<void> {
   
-  let idbounty:number = id;
+  //let deadline = "1000";
+  let idbounty:number = parseInt(id);
   const dao = getDaoContract(options.daoAcc,options.accountId);
-  const result = await dao.view("get_bounties", { from_index: 0, limit: 50 });
-  const maxtimes:number= parseInt(inspect(result[idbounty].times));
-  let deadline = "1000";
-  let claims_count = 0;
-  let claimId = options.claimId;  
-  
-  if(maxtimes > claims_count){
-    //console.log(inspect(result[idbounty], false, 5, true));
-  }else{
-    //console.log("All claims were done");
-  }
-
-  console.log("Under development");
+  const result = await dao.call("bounty_giveup",{
+      id: idbounty,
+  }, 200, ONE_NEAR.toString());
+  console.log(result);
+  //console.log("Under development");
   
 }
 
