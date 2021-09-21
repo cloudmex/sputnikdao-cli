@@ -55,42 +55,42 @@ export async function daoBountyClaim( id:string, options: Record<string, any>): 
       id: idbounty,
       deadline: deadline,
   }, 200, ONE_NEAR.toString());
-  console.log(result);
-  //console.log("Under development");
+  console.log("Bounty Claimed");
+  console.log(inspect(result));
 }
 
 export async function daoBountyGiveup( id:string, options: Record<string, any>): Promise<void> {
-  
-  //let deadline = "1000";
+
   let idbounty:number = parseInt(id);
   const dao = getDaoContract(options.daoAcc,options.accountId);
   const result = await dao.call("bounty_giveup",{
       id: idbounty,
-  }, 200, ONE_NEAR.toString());
-  console.log(result);
-  //console.log("Under development");
+  }, 200);
+  console.log("Bounty Give Up");
+  console.log(inspect(result));
   
 }
 
-export async function daoBountyDone( id:number, options: Record<string, any>): Promise<void> {
+export async function daoBountyDone( id:string, options: Record<string, any>): Promise<void> {
 
+  let idbounty:number = parseInt(id);
   let dao_account = options.daoAcc;
   const dao = getDaoContract(dao_account,options.accountId);
   //let yocto_amount = ntoy(amount);
   let claims = parseInt(options.times);
   let deadline = "1000";
   //console.log(yocto_amount);
-  // const addBountyCall = await dao.call("add_proposal", {
-  //   proposal: {
-  //     description: "bounty realiced",
-  //     kind: {
-  //       BountyDone: {
-  //         bounty_id: id,
-  //         receiver_id: options.accountId,
-  //       }
-  //     }
-  //   }
-  // }, 200, ONE_NEAR.toString());
-  //console.log(inspect(addBountyCall, false, 5, true));
+  const bountyDoneCall = await dao.call("add_proposal", {
+    proposal: {
+      description: "bounty realiced",
+      kind: {
+        BountyDone: {
+          bounty_id: idbounty,
+          receiver_id: options.accountId,
+        }
+      }
+    }
+  }, 200, ONE_NEAR.toString());
+  console.log(inspect(bountyDoneCall, false, 5, true));
   console.log("Under development");
 }
