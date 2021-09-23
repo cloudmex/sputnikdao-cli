@@ -2,6 +2,7 @@ import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBa
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
 import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
+import { option } from "commander";
 
 
 export async function daoAddBounty( amount:number, options: Record<string, any>): Promise<void> {
@@ -48,7 +49,12 @@ export async function daoGetBounties(options: Record<string, any>): Promise<void
 
 export async function daoBountyClaim( id:string, options: Record<string, any>): Promise<void> {
   
-  let deadline = "1000";
+  let deadline;
+  if(options.deadline != null){
+    deadline = "1000";
+  }else{
+    deadline = options.deadline;
+  }
   let idbounty:number = parseInt(id);
   const dao = getDaoContract(options.daoAcc,options.accountId);
   const result = await dao.call("bounty_claim",{
@@ -56,7 +62,7 @@ export async function daoBountyClaim( id:string, options: Record<string, any>): 
       deadline: deadline,
   }, 200, ONE_NEAR.toString());
   console.log("Bounty Claimed");
-  console.log(inspect(result));
+
 }
 
 export async function daoBountyGiveup( id:string, options: Record<string, any>): Promise<void> {
@@ -66,8 +72,7 @@ export async function daoBountyGiveup( id:string, options: Record<string, any>):
   const result = await dao.call("bounty_giveup",{
       id: idbounty,
   }, 200);
-  console.log("Bounty Give Up");
-  console.log(inspect(result));
+  console.log("Bounty Give Up Done");
   
 }
 
@@ -92,5 +97,4 @@ export async function daoBountyDone( id:string, options: Record<string, any>): P
     }
   }, 200, ONE_NEAR.toString());
   console.log(inspect(bountyDoneCall, false, 5, true));
-  console.log("Under development");
 }
