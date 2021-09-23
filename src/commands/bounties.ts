@@ -2,6 +2,7 @@ import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBa
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
 import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
+import { option } from "commander";
 
 
 export async function daoAddBounty( amount:number, options: Record<string, any>): Promise<void> {
@@ -46,62 +47,54 @@ export async function daoGetBounties(options: Record<string, any>): Promise<void
   }
 }
 
-export async function daoBountyClaim( id:number, options: Record<string, any>): Promise<void> {
+export async function daoBountyClaim( id:string, options: Record<string, any>): Promise<void> {
   
-  let idbounty:number = id;
-  const dao = getDaoContract(options.daoAcc,options.accountId);
-  const result = await dao.view("get_bounties", { from_index: 0, limit: 50 });
-  const maxtimes:number= parseInt(inspect(result[idbounty].times));
-  let deadline = "1000";
-  let claims_count = 0;  
-  
-  if(maxtimes > claims_count){
-    //console.log(inspect(result[idbounty], false, 5, true));
+  let deadline;
+  if(options.deadline != null){
+    deadline = "1000";
   }else{
-    //console.log("All claims were done");
+    deadline = options.deadline;
   }
-  console.log("Under development");
+  let idbounty:number = parseInt(id);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
+  const result = await dao.call("bounty_claim",{
+      id: idbounty,
+      deadline: deadline,
+  }, 200, ONE_NEAR.toString());
+  console.log("Bounty Claimed");
+
 }
 
-export async function daoBountyGiveup( id:number, options: Record<string, any>): Promise<void> {
-  
-  let idbounty:number = id;
-  const dao = getDaoContract(options.daoAcc,options.accountId);
-  const result = await dao.view("get_bounties", { from_index: 0, limit: 50 });
-  const maxtimes:number= parseInt(inspect(result[idbounty].times));
-  let deadline = "1000";
-  let claims_count = 0;
-  let claimId = options.claimId;  
-  
-  if(maxtimes > claims_count){
-    //console.log(inspect(result[idbounty], false, 5, true));
-  }else{
-    //console.log("All claims were done");
-  }
+export async function daoBountyGiveup( id:string, options: Record<string, any>): Promise<void> {
 
-  console.log("Under development");
+  let idbounty:number = parseInt(id);
+  const dao = getDaoContract(options.daoAcc,options.accountId);
+  const result = await dao.call("bounty_giveup",{
+      id: idbounty,
+  }, 200);
+  console.log("Bounty Give Up Done");
   
 }
 
-export async function daoBountyDone( id:number, options: Record<string, any>): Promise<void> {
+export async function daoBountyDone( id:string, options: Record<string, any>): Promise<void> {
 
+  let idbounty:number = parseInt(id);
   let dao_account = options.daoAcc;
   const dao = getDaoContract(dao_account,options.accountId);
   //let yocto_amount = ntoy(amount);
   let claims = parseInt(options.times);
   let deadline = "1000";
   //console.log(yocto_amount);
-  // const addBountyCall = await dao.call("add_proposal", {
-  //   proposal: {
-  //     description: "bounty realiced",
-  //     kind: {
-  //       BountyDone: {
-  //         bounty_id: id,
-  //         receiver_id: options.accountId,
-  //       }
-  //     }
-  //   }
-  // }, 200, ONE_NEAR.toString());
-  //console.log(inspect(addBountyCall, false, 5, true));
-  console.log("Under development");
+  const bountyDoneCall = await dao.call("add_proposal", {
+    proposal: {
+      description: "bounty realiced",
+      kind: {
+        BountyDone: {
+          bounty_id: idbounty,
+          receiver_id: options.accountId,
+        }
+      }
+    }
+  }, 200, ONE_NEAR.toString());
+  console.log(inspect(bountyDoneCall, false, 5, true));
 }
