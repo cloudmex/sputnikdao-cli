@@ -82,30 +82,9 @@ export async function daoDeployCode(): Promise<void> {
 
 }
 
-export async function daoInit(): Promise<void> {
-
-  const dao_params = {
-    "config": {
-      "name": "dao", "purpose": "meta-pool governance", "bond": "1000000000000000000000000", "metadata": ""
-    },
-    "policy": [
-      "lucio.testnet",
-      "laura-wulff.testnet",
-      "asimov.testnet",
-      "lucio2.testnet",
-      "lucio3.testnet"
-    ]
-  };
-
-  const dao = getDaoContract()
-
-  dao.call("new", dao_params)
-
-}
-
 export async function daoInfo(options: Record<string, any>): Promise<void> {
 
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   console.log("location: ", dao.contract_account);
 
   const result = await dao.view("get_policy");
@@ -122,7 +101,7 @@ export async function daoUI(options: Record<string, any>): Promise<void> {
 
 export async function daoGetPolicy(options: Record<string, any>): Promise<void> {
 
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
 
   const result = await dao.view("get_policy");
 
@@ -134,7 +113,7 @@ export async function daoProposeUpgrade(wasmFile: string, options: Record<string
 
   const wasmInfo = getBlobHash(wasmFile);
 
-  const dao = getDaoContract();
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
 
   if (!options.skip) {
     //store the blob
@@ -180,7 +159,7 @@ export async function daoProposeSelfUpgrade(options: Record<string, any>): Promi
       base58Hash: resultBase58Hash 
     }));
   }
-  
+  console.log(wasmInfo.hash);
     //Send proposal for self upgrading DAO
   const addProposalResult = await dao.call("add_proposal", {
     proposal: {
