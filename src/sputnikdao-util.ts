@@ -89,6 +89,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   program
     .command("bounty_claim <idbounty>")
     .description("claim a bounty")
+    .option("--deadline <deadline>", "This is equivalent time in days, 1000 is 7 days")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-a, --accountId <accountId>", "use account as signer")
     .action(daoBountyClaim);

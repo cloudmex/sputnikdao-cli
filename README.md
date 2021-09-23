@@ -241,7 +241,7 @@ result.status.SuccessValue: 1
 **Example:**
 
 ```bash
-sputnikdao get_bounties --daoAcc mydao_canales -accountId joehank.testnet
+sputnikdao get_bounties --daoAcc mydao_canales --accountId joehank.testnet
 ```
 
 <details>
@@ -304,17 +304,17 @@ sputnikdao get_bounties --id 1 --daoAcc mydao_canales -a joehank.testnet
 
 ---
 
-### `Under development`
+### `sputnikdao proposal bounty_claim`
 
 > Claim a Bounty.
 
 -   arguments: `Idbounty`
--   options: `daoAcc` `accountId`
+-   options: `deadline` `daoAcc` `accountId`
 
 **Example:**
 
 ```bash
-sputnikdao proposal bounty_claim 1 --daoAcc mydao_canales --accountId joehank.testnet
+sputnikdao bounty_claim 1 --deadline 1000 --daoAcc mydao_canales --accountId joehank.testnet
 ```
 
 <details>
@@ -322,13 +322,15 @@ sputnikdao proposal bounty_claim 1 --daoAcc mydao_canales --accountId joehank.te
 <p>
 
 ```
-Under development
+Bounty Claimed
 ```
 
 </p>
 </details>
 
-<p><p>
+---
+
+### `sputnikdao proposal bounty_claim`
 
 > Give up for a Bounty claimed.
 
@@ -338,7 +340,7 @@ Under development
 **Example:**
 
 ```bash
-sputnikdao proposal bounty_giveup 1 --daoAcc mydao_canales --accountId joehank.testnet
+sputnikdao bounty_giveup 1 --daoAcc mydao_canales --accountId joehank.testnet
 ```
 
 <details>
@@ -346,13 +348,15 @@ sputnikdao proposal bounty_giveup 1 --daoAcc mydao_canales --accountId joehank.t
 <p>
 
 ```
-Under development
+Bounty Give Up Done
 ```
 
 </p>
 </details>
 
-<p><p>
+---
+
+### `sputnikdao proposal bountyDone`
 
 > Add a proposal for a Bounty Done.
 
@@ -370,7 +374,8 @@ sputnikdao proposal bountyDone 1 --daoAcc mydao_canales --accountId joehank.test
 <p>
 
 ```
-Under development
+result.status.SuccessValue: 2
+2
 ```
 
 </p>
