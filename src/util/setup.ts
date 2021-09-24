@@ -2,16 +2,16 @@ import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
 
-import * as network from "near-api-lite/lib/network.js";
 import { program } from "commander";
 import { SmartContract } from "near-api-lite";
 
 export const hostname = os.hostname();
 export const prodMode = false;
 export const NETWORK_ID:string = prodMode ? "mainnet" : "testnet";
-network.setCurrent(NETWORK_ID);
 export const SPUTNIK_FACTORY_TESTNET="sputnikv2.testnet"
-export const SPUTNIK_FACTORY_MAINNET="sputnikdao.near"
+export const SPUTNIK_FACTORY_MAINNET="sputnik-dao.near"
+export const TOKEN_FACTORY_MAINNET="undefined_cli.near"
+export const TOKEN_FACTORY_TESTNET="tokenfactory.testnet"
 export const SPUTNIK_WASM_PATH:string = "res/sputnikdao2-2021-09-15.wasm";
 export const METAPOOL_CONTRACT_ACCOUNT = prodMode ? "contract3.preprod-pool.near" : "contract3.preprod-pool.testnet";
 export const OPERATOR_ACCOUNT = prodMode ? "alantests.near" : "operator.preprod-pool." + NETWORK_ID;
@@ -55,6 +55,7 @@ export function getCredentials(accountId: string): Credentials {
 //--------------------------
 export function newGetCredentials(accountId: string,network: string): Credentials {
   const homedir = os.homedir();
+  //console.log(network);
   const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/"+network+"/" + accountId + ".json");
   const credentialsString = fs.readFileSync(CREDENTIALS_FILE).toString();
   const result: Credentials = JSON.parse(credentialsString);

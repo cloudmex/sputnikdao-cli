@@ -1,44 +1,13 @@
 import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH } from "../util/setup";
+import { configSigner, multiConfigSigner, getDaoContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
-import { option } from "commander";
-/*
-export async function daoCreate(): Promise<void> {
-
-  const dao_params = {
-    "config": {
-      "name": "dao", "symbol": "$META-GOV", "decimals": 24, "purpose": "meta-pool governance", "bond": "1000000000000000000000000", "metadata": ""
-    },
-    "policy": [
-      "lucio.testnet",
-      "laura-wulff.testnet",
-      "asimov.testnet",
-      "lucio2.testnet",
-      "lucio3.testnet"
-    ]
-  };
-
-  const dao_params_base_64 = encodeBase64(decodeUTF8(JSON.stringify(dao_params)));
-
-  const sputnik2Factory = new SmartContract("sputnik2.testnet");
-  configSigner(sputnik2Factory, "lucio.testnet")
-
-  await sputnik2Factory.call("create",
-    {
-      name: "test-dao",
-      pubkey: "Cvqie7SJ6xmLNA5KoTAYoUAkhD25KaJLG6N9oSmzT9FK",
-      args: dao_params_base_64
-    }, 150, ntoy(30));
-
-  //near call $CONTRACT_ID create "{\"name\": \"genesis\", \"args\": \"$ARGS\"}"  --accountId $CONTRACT_ID --amount 5 --gas 150000000000000
-
-}
-*/
+import * as network from "near-api-lite/lib/network.js";
 
 export async function daoCreate(dao_name: string, council: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
   const policy = {
     "policy": [
       "alan1.testnet"
@@ -54,19 +23,19 @@ export async function daoCreate(dao_name: string, council: string, options: Reco
   };
   console.log(dao_params);
   const dao_params_base_64 = encodeBase64(decodeUTF8(JSON.stringify(dao_params)));
-  console.log(options);
+  //console.log(options);
   if (options.accountId == null) {
     throw Error(`You need to provide a NEAR ID using --accountId`);
   }
-  const dao_factory: string = (getNetworkEnding(options.Env) == 'near') ? 'sputnik-dao.near' : "sputnikv2.testnet";
+  const dao_factory: string = (options.network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: SPUTNIK_FACTORY_TESTNET;
   const sputnik2Factory = new SmartContract(dao_factory);
-  multiConfigSigner(sputnik2Factory, options.accountId, options.Env);
+  multiConfigSigner(sputnik2Factory, options.accountId, options.network);
 
   await sputnik2Factory.call("create",
     {
       name: dao_name,
       args: dao_params_base_64
-    }, 150, ntoy(10));
+    }, 150, ntoy(5));
 
   //near call $CONTRACT_ID create "{\"name\": \"genesis\", \"args\": \"$ARGS\"}"  --accountId $CONTRACT_ID --amount 5 --gas 150000000000000
 
@@ -83,7 +52,7 @@ export async function daoDeployCode(): Promise<void> {
 }
 
 export async function daoInfo(options: Record<string, any>): Promise<void> {
-
+  network.setCurrent(options.network);
   const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   console.log("location: ", dao.contract_account);
 
@@ -100,7 +69,7 @@ export async function daoUI(options: Record<string, any>): Promise<void> {
 }
 
 export async function daoGetPolicy(options: Record<string, any>): Promise<void> {
-
+  network.setCurrent(options.network);
   const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
 
   const result = await dao.view("get_policy");
@@ -110,7 +79,7 @@ export async function daoGetPolicy(options: Record<string, any>): Promise<void> 
 }
 
 export async function daoProposeUpgrade(wasmFile: string, options: Record<string, any>): Promise<void> {
-
+  network.setCurrent(options.network);
   const wasmInfo = getBlobHash(wasmFile);
 
   const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
@@ -142,9 +111,11 @@ export async function daoProposeUpgrade(wasmFile: string, options: Record<string
 }
 
 export async function daoProposeSelfUpgrade(options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
+  
   const wasmInfo = getBlobHash(SPUTNIK_WASM_PATH);
 
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   if (!options.skip) {
     //store the blob
     const resultBase58Hash = await dao.call(
@@ -193,8 +164,8 @@ export async function daoProposeSelfUpgrade(options: Record<string, any>): Promi
 
 }
 export async function daoListProposals(options: Record<string, any>): Promise<void> {
-
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  network.setCurrent(options.network);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
 
   const result = await dao.view("get_proposals", { from_index: 0, limit: 50 });
 
@@ -202,20 +173,7 @@ export async function daoListProposals(options: Record<string, any>): Promise<vo
 
 }
 export async function daoProposePayout(amount: number, options: Record<string, any>): Promise<void> {
-  /*let env:string='';
-  let dao_factory:string='';
-  console.log(options);
-  if (options.Env=='mainnet'){
-    env='near';
-    dao_factory='sputnik-dao';
-  }else if (options.Env=='testnet'){
-    env='testnet';
-    dao_factory='sputnikv2';
-  }else{
-    throw new Error("This is not a valid network");
-  }
-  if(!options.daoAcc){ throw new Error("It's required DAO name as <DaoName>.daofactory.testnet"); }
-  let dao_account = options.daoAcc+'.'+dao_factory+'.'+env*/
+  network.setCurrent(options.network);
   let dao_account = options.daoAcc;
   const dao = getDaoContract(dao_account,options.accountId);
   let yocto_amount = ntoy(amount);
@@ -238,17 +196,16 @@ export async function daoProposePayout(amount: number, options: Record<string, a
 
 }
 export async function daoProposeTokenFarm(token_name: string,token_symbol: string, token_amount: number, options: Record<string, any>): Promise<void> {
-
+  network.setCurrent(options.network);
   if (options.daoAcc == null) {
     throw Error(`You need to provide a DAO account using --daoAcc`);
   }
-  let dao_acc:string=options.daoAcc+".sputnikv2.testnet";
   let yocto_amount = ntoy(token_amount);
   console.log(yocto_amount);
   const token_args = { 
     "args": { 
       "owner_id": options.accountId, 
-      "total_supply": yocto_amount, 
+      "total_supply": token_amount, 
       "metadata": { 
         "spec": "ft-1.0.0", 
         "name": token_name, 
@@ -258,15 +215,16 @@ export async function daoProposeTokenFarm(token_name: string,token_symbol: strin
       } 
     };
   const token_args_base_64 = encodeBase64(decodeUTF8(JSON.stringify(token_args)));
-
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const token_factory=(options.network=="mainnet") ? TOKEN_FACTORY_MAINNET: TOKEN_FACTORY_TESTNET;
+  
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   const addProposalCall = await dao.call("add_proposal", {
     proposal: {
       //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
       description: "Farming " + token_amount + " units of a new token: " + token_name,
       kind: {
         FunctionCall: {
-          receiver_id: "tokenfactory.testnet",
+          receiver_id: token_factory,
           actions: [
             {
               method_name: "create_token",
@@ -284,8 +242,9 @@ export async function daoProposeTokenFarm(token_name: string,token_symbol: strin
 
 }
 export async function daoProposeCouncil(council: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
 
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   //In case that remove option was called
   let addProposalCall;
   if (options.remove) {
@@ -319,6 +278,7 @@ export async function daoProposeCouncil(council: string, options: Record<string,
 
 }
 export async function daoProposeCall(DaoId: string, MethodCall: string, ArgsCall: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
 
   console.log(options.env);
   /*let env:string='';
@@ -358,8 +318,10 @@ export async function daoProposeCall(DaoId: string, MethodCall: string, ArgsCall
 
 }
 export async function daoProposePolicy(policyFile: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
+  
   const new_policy: JSON = JSON.parse(fs.readFileSync(policyFile, 'utf8'));
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   console.log(new_policy);
   const addProposalCall = await dao.call("add_proposal", {
     proposal: {
@@ -412,11 +374,12 @@ export async function daoListHash(wasmFile: string): Promise<void> {
 
 }
 
+/*
 export async function daoRemoveProposal(id: string): Promise<void> {
   const dao = getDaoContract();
   const result = await dao.call("act_proposal", { id: Number(id), action: "RemoveProposal" });
   console.log(inspect(result || "success", false, 5, true));
-}
+}*/
 
 export async function daoRemoveBlob(hashOrWasmFile: string): Promise<void> {
 
@@ -446,9 +409,10 @@ export async function daoUpgrade(): Promise<void> {
 }
 
 export async function daoVoteApprove(id: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
   //note: all commander args are strings
 
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   if (options.accountId) {
     configSigner(dao, options.accountId);
   }
@@ -467,9 +431,10 @@ export async function daoVoteApprove(id: string, options: Record<string, any>): 
 
 //TEMP DEBUG to re-enable as InProgress a proposal approve but failed in execution
 export async function daoVoteUnapprove(id: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
   //note: all commander args are strings
 
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   if (options.accountId) {
     configSigner(dao, options.accountId);
   }
@@ -487,9 +452,10 @@ export async function daoVoteUnapprove(id: string, options: Record<string, any>)
 }
 
 export async function daoVoteRemove(id: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
   //note: all commander args are strings
 
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
   if (options.accountId) {
     configSigner(dao, options.accountId);
   }

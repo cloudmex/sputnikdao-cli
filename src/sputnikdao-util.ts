@@ -9,7 +9,7 @@ import { formatLargeNumbers, showNumbers } from "./util/format-near.js";
 import { getDaoContract, METAPOOL_CONTRACT_ACCOUNT} from "./util/setup.js";
 import { deleteFCAK } from "./commands/delete-keys.js";
 import { getTokenBalance, stakingContract, getStakingContract } from "./commands/staking-contract";
-import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoRemoveProposal, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, daoProposePolicy, daoProposeTokenFarm } from "./commands/dao.js";
+import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, daoProposePolicy, daoProposeTokenFarm } from "./commands/dao.js";
 import {daoAddBounty, daoGetBounties,daoBountyClaim, daoBountyGiveup, daoBountyDone} from "./commands/bounties.js";
 import { SmartContract } from "near-api-lite";
 
@@ -27,7 +27,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   .option("--metadata <meta>", "Asign metadata","")
   .option("--accountId <accountId>", "Use account as signer")
   .option("--purpose <purpose>", "Give a purpose to DAO","Sputnik V2 DAO")
-  .option("--network <network>", "Pick a network: testnet/mainnet")
+  .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
   .action(daoCreate);
 
   program
@@ -35,7 +35,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .description("Recovers info from Sputnik V2 DAO")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("--accountId <accountId>", "Use account as signer")
-    .option("--network <network>", "Pick a network: testnet/mainnet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoInfo);
 
   
@@ -44,7 +44,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .command("openui")
     .description("Open UI website of Sputnik DAO v2")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
-    .option("--network <network>", "Pick a network: testnet/mainnet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoUI);
 
   program
@@ -52,7 +52,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .description("Obtain the voting policy")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("--accountId <accountId>", "Use account as signer")
-    .option("--network <network>", "Pick a network: testnet/mainnet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoGetPolicy);
 
   // Create and initialize a new staking contract
@@ -63,7 +63,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("--key <key>", "Recover NEAR Key using 'near keys <accountId>' command")
     .option("--accountId <accountId>", "Use account as signer")
-    .option("--network <network>", "Pick a network: testnet/mainnet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(stakingContract);
   //Recovers staking contract
   program
@@ -72,14 +72,14 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("--key <key>", "Recover NEAR Key using 'near keys <accountId>' command")
     .option("--accountId <accountId>", "Use account as signer")
-    .option("--network <network>", "Pick a network: testnet/mainnet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(getStakingContract);
   program
       .command("token-balance <token_id>")
       .description("Shows token balance of DAO")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("--accountId <accountId>", "Use account as signer")
-      .option("--network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .action(getTokenBalance);
 /*
   program
@@ -94,7 +94,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--id <id>", "Id to get a specific bounty")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-a, --accountId <accountId>", "use account as signer")
-    .option("--network <network>", "Pick a network: testnet/mainnet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoGetBounties);
 
   program
@@ -102,7 +102,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .description("claim a bounty")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-a, --accountId <accountId>", "use account as signer")
-    .option("--network <network>", "Pick a network: testnet/mainnet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoBountyClaim);
 
   program
@@ -110,7 +110,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .description("give up to the bounty")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-a, --accountId <accountId>", "use account as signer")
-    .option("--network <network>", "Pick a network: testnet/mainnet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoBountyGiveup);
     
 
@@ -122,13 +122,13 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
-      .option("--network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .action(daoProposeSelfUpgrade);
     dao_propose
       .command("upgrade <wasmFile>")
       .description("Propose the upgrade of an external contract")
       .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
-      .option("--network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .action(daoProposeUpgrade);
     
     dao_propose
@@ -136,7 +136,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .description("Propose the payout")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
-      .option("--network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .description("Add a new proposal for payout")
       .action(daoProposePayout);
     //Method for upgrading DAO policy
@@ -145,7 +145,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .description("Propose the of upgrade of voting policy through a JSON file")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
-      .option("--network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .description("Add a new proposal for payout")
       .action(daoProposePolicy);
 
@@ -155,7 +155,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("--times <times>", "How many times this Bounty can be done")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
-      .option("-n, --network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .description("Add a new proposal for Bounty")
       .action(daoAddBounty);
 
@@ -163,7 +163,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .command("bountyDone <id>")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
-      .option("-n, --network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .description("Add a new proposal for a BountyDone")
       .action(daoBountyDone);
     
@@ -174,7 +174,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("--remove", "Indicate to remove the council member")
       .option("--role <role>", "Pick a different role to council member","council")
-      .option("-n, --network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .description("Add a new proposal for payout")
       .action(daoProposeCouncil);
 
@@ -183,7 +183,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .description("Propose farm a new token")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
-      .option("-n, --network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .description("Add a new proposal for payout")
       .action(daoProposeTokenFarm);
 
@@ -192,7 +192,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .description("propose calling to a SC method")
       .option("--factoryId <factoryId>","Choose a differente DAO factory: dao.<factoryId>.testnet","sputnikv2")
       .option("--targetId <targetId>","Choose target smartcontract for calling")
-      .option("-n, --network <network>", "Pick a network: testnet/mainnet")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .action(daoProposeCall); 
 
 
