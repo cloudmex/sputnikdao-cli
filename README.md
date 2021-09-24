@@ -304,7 +304,7 @@ sputnikdao get_bounties --id 1 --daoAcc mydao_canales -a joehank.testnet
 
 ---
 
-### `sputnikdao proposal bounty_claim`
+### `sputnikdao bounty_claim`
 
 > Claim a Bounty.
 
@@ -330,7 +330,7 @@ Bounty Claimed
 
 ---
 
-### `sputnikdao proposal bounty_claim`
+### `sputnikdao bounty_giveup`
 
 > Give up for a Bounty claimed.
 
