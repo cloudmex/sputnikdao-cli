@@ -3,12 +3,13 @@ import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
 import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
 import { option } from "commander";
+import * as network from "near-api-lite/lib/network.js";
 
 
 export async function daoAddBounty( amount:number, options: Record<string, any>): Promise<void> {
-
+    network.setCurrent(options.network);
     let dao_account = options.daoAcc;
-    const dao = getDaoContract(dao_account,options.accountId);
+    const dao = getDaoContract(dao_account,options.accountId,options.network);
     let yocto_amount = ntoy(amount);
     let claims = parseInt(options.times);
     let deadline = "1000";
@@ -35,8 +36,8 @@ export async function daoAddBounty( amount:number, options: Record<string, any>)
 }
 
 export async function daoGetBounties(options: Record<string, any>): Promise<void> {
-  
-  const dao = getDaoContract(options.daoAcc,options.accountId);
+  network.setCurrent(options.network);
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.network);
   const result = await dao.view("get_bounties", { from_index: 0, limit: 50 });
   let idbounty:number = options.id;
 
@@ -48,7 +49,7 @@ export async function daoGetBounties(options: Record<string, any>): Promise<void
 }
 
 export async function daoBountyClaim( id:string, options: Record<string, any>): Promise<void> {
-  
+  network.setCurrent(options.network);
   let deadline;
   if(options.deadline != null){
     deadline = "1000";
@@ -56,7 +57,7 @@ export async function daoBountyClaim( id:string, options: Record<string, any>): 
     deadline = options.deadline;
   }
   let idbounty:number = parseInt(id);
-  const dao = getDaoContract(options.daoAcc,options.accountId);
+  const dao = getDaoContract(options.daoAcc,options.accountId, options.network);
   const result = await dao.call("bounty_claim",{
       id: idbounty,
       deadline: deadline,
@@ -66,9 +67,9 @@ export async function daoBountyClaim( id:string, options: Record<string, any>): 
 }
 
 export async function daoBountyGiveup( id:string, options: Record<string, any>): Promise<void> {
-
+  network.setCurrent(options.network);
   let idbounty:number = parseInt(id);
-  const dao = getDaoContract(options.daoAcc,options.accountId);
+  const dao = getDaoContract(options.daoAcc,options.accountId, options.network);
   const result = await dao.call("bounty_giveup",{
       id: idbounty,
   }, 200);
@@ -77,10 +78,10 @@ export async function daoBountyGiveup( id:string, options: Record<string, any>):
 }
 
 export async function daoBountyDone( id:string, options: Record<string, any>): Promise<void> {
-
+  network.setCurrent(options.network);
   let idbounty:number = parseInt(id);
   let dao_account = options.daoAcc;
-  const dao = getDaoContract(dao_account,options.accountId);
+  const dao = getDaoContract(dao_account,options.accountId, options.network);
   //let yocto_amount = ntoy(amount);
   let claims = parseInt(options.times);
   let deadline = "1000";
