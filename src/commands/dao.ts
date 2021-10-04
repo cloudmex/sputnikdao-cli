@@ -27,10 +27,15 @@ export async function daoCreate(dao_name: string, council: string, options: Reco
   if (options.accountId == null) {
     throw Error(`You need to provide a NEAR ID using --accountId`);
   }
-  const dao_factory: string = (options.network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: SPUTNIK_FACTORY_TESTNET;
+  let dao_factory: string;
+  if(options.factory != null){
+    dao_factory = (options.network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: options.factory;
+  }else{
+    dao_factory= (options.network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: SPUTNIK_FACTORY_TESTNET;
+  }
   const sputnik2Factory = new SmartContract(dao_factory);
   multiConfigSigner(sputnik2Factory, options.accountId, options.network);
-
+  console.log(inspect(sputnik2Factory, false, 5, true));
   await sputnik2Factory.call("create",
     {
       name: dao_name,
