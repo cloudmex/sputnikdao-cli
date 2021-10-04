@@ -11,7 +11,7 @@ export async function factoryDeployCode(options: Record<string, any>): Promise<v
   const smartC = getSmartContract(options.daoAcc,options.accountId);
   configSigner(smartC, smartC.contract_account);
   console.log(inspect(smartC, false, 5, true));
-  const code = readFileSync("/home/josecanales/Github/sputnikdao-cli/res/sputnikdao_factory2.wasm");
+  const code = readFileSync("res/sputnikdao_factory2.wasm");
   const result = await smartC.deployCode(code);
   const init = await smartC.call("new",{});
 
