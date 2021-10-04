@@ -4,40 +4,31 @@
             "name": "all",
             "kind": "Everyone",
             "permissions": [
-                "*:AddProposal",
-                "*:Finalize"
+                "*:AddProposal"
             ],
             "vote_policy": {}
         },
         {
             "name": "council",
             "kind": {
-                "Group": [
-                    "alan1.testnet"
-                ]
+                "Member": "1" 
             },
             "permissions": [
                 "*:*"
             ],
             "vote_policy": {
-                "Group": {
-                    "weight_kind": "RoleWeight",
-                    "quorum": "0",
-                    "threshold": [
-                        1,
-                        8
-                    ]
+                "*": {
+                  "weight_kind": "TokenWeight",
+                  "quorum": "0",
+                  "threshold": "1"
                 }
             }
         }
     ],
     "default_vote_policy": {
-        "weight_kind": "RoleWeight",
+        "weight_kind": "TokenWeight",
         "quorum": "0",
-        "threshold": [
-            1,
-            2
-        ]
+        "threshold": "1"
     },
     "proposal_bond": "10000000000000000000000",
     "proposal_period": "604800000000000",

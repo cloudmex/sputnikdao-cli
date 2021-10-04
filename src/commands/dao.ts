@@ -1,7 +1,7 @@
-import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
+import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58, yton } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, multiConfigSigner, getDaoContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET } from "../util/setup";
+import { configSigner, multiConfigSigner, getDaoContract,getSmartContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import * as network from "near-api-lite/lib/network.js";
@@ -177,15 +177,29 @@ export async function daoProposePayout(amount: number, options: Record<string, a
   let dao_account = options.daoAcc;
   const dao = getDaoContract(dao_account,options.accountId);
   let yocto_amount = ntoy(amount);
-  console.log(yocto_amount);
+  console.log(amount);
+  //Propose a parget
+  const target_id = (options.target!=undefined) ? options.target : options.accountId;
+  const token_id = options.token + "." + TOKEN_FACTORY_TESTNET
+  //Compare if the token is not $NEAR (default)
+  if(options.token!=""){
+    const token_contract = getSmartContract(token_id,options.accountId);
+    const storageCall = await token_contract.call("storage_deposit", {
+      account_id: target_id,
+    }, 100, ONE_NEAR.toString());
+  
+    console.log(inspect(storageCall, false, 5, true));
+    yocto_amount = ntoy(amount/1000000);
+  }
+  //Do a proposal for payout of tokens
   const addProposalCall = await dao.call("add_proposal", {
     proposal: {
       //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
       description: "propose a payout",
       kind: {
         Transfer: {
-          receiver_id: options.accountId,
-          token_id: "", //default for basic $NEAR
+          receiver_id: target_id,
+          token_id:token_id, //default for basic $NEAR
           amount: yocto_amount,
         }
       }
@@ -200,12 +214,15 @@ export async function daoProposeTokenFarm(token_name: string,token_symbol: strin
   if (options.daoAcc == null) {
     throw Error(`You need to provide a DAO account using --daoAcc`);
   }
-  let yocto_amount = ntoy(token_amount);
+  console.log(token_amount);
+  let yocto_amount = ntoy(token_amount/100000);
   console.log(yocto_amount);
+
+  const owner_id = (options.targetId!=undefined) ? options.targetId : options.daoAcc+".sputnikv2.testnet";
   const token_args = { 
     "args": { 
-      "owner_id": options.accountId, 
-      "total_supply": token_amount, 
+      "owner_id": owner_id, 
+      "total_supply": yocto_amount, 
       "metadata": { 
         "spec": "ft-1.0.0", 
         "name": token_name, 
@@ -221,7 +238,7 @@ export async function daoProposeTokenFarm(token_name: string,token_symbol: strin
   const addProposalCall = await dao.call("add_proposal", {
     proposal: {
       //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
-      description: "Farming " + token_amount + " units of a new token: " + token_name,
+      description: "Farming " + token_amount + " units of a new token: " + token_name +" to "+owner_id,
       kind: {
         FunctionCall: {
           receiver_id: token_factory,
@@ -277,27 +294,14 @@ export async function daoProposeCouncil(council: string, options: Record<string,
   console.log(inspect(addProposalCall, false, 5, true));
 
 }
-export async function daoProposeCall(DaoId: string, MethodCall: string, ArgsCall: string, options: Record<string, any>): Promise<void> {
+export async function daoProposeCall(targetId: string, methodCall: string, argsCall: string, options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
 
-  console.log(options.env);
-  /*let env:string='';
-  let dao_factory:string='';
-  if (options.env=='mainnet'){
-    env='near';
-    dao_factory='sputnik-dao';
-  }else if (options.env=='testnet'){
-    env='testnet';
-    dao_factory='sputnikv2';
-  }else{
-    throw new Error("This is not a valid network");
-  }
-  let dao_account = options.daoAcc+'.'+dao_factory+'.'+env*/
   let dao_account = options.daoAcc;
-  const dao = getDaoContract(options.daoAcc, options.account);
+  const dao = getDaoContract(options.daoAcc, options.accountId);
 
-  console.log(ArgsCall);
-  console.log(MethodCall);
+  console.log(methodCall);
+  console.log(argsCall);
 
   const addProposalCall = await dao.call("add_proposal", {
     proposal: {
@@ -305,14 +309,12 @@ export async function daoProposeCall(DaoId: string, MethodCall: string, ArgsCall
       description: "propose a calling a method to target contract",
       kind: {
         FunctionCall: {
-          receiver_id: options.targetId,
-          //method_name: "get_proposals",
-          //args: { from_index: 0, limit: 50 },
-          actions: [{ method_name: MethodCall, args: encodeBase64(decodeUTF8(ArgsCall)), deposit: "0", gas: "200000000000000" }]
+          receiver_id: targetId,
+          actions: [{ method_name: methodCall, args: encodeBase64(decodeUTF8(argsCall)), deposit: "0", gas: "100000000000000" }]
         }
       }
     }
-  }, 200, ONE_NEAR.toString());
+  }, 100, ONE_NEAR.toString());
 
   console.log(inspect(addProposalCall, false, 5, true));
 
