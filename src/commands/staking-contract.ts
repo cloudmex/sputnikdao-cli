@@ -1,13 +1,15 @@
 import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { getDaoContract, getFactoryContract, getRandomInt, getSmartContract } from "../util/setup";
+import { getDaoContract, getFactoryContract, getRandomInt, getSmartContract, TOKEN_FACTORY_TESTNET } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import { option } from "commander";
+import * as network from "near-api-lite/lib/network.js";
 import BN = require('bn.js');
 
 export async function stakingContract(token_id: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
   const random_num = getRandomInt(0,1000000000);
   const contract_name = "staking-"+random_num.toString();
   const factory = getFactoryContract(undefined, options.accountId);
@@ -37,7 +39,7 @@ export async function stakingContract(token_id: string, options: Record<string, 
   const token_contract = getSmartContract(token_id, options.accountId);
   
   const tokenStorageCall = await token_contract.call("ft_balance_of", {
-    account_id:"alan2-staking.generic.testnet"
+    account_id:contract_name+".generic.testnet"
   }, 200);
 
   console.log(inspect(tokenStorageCall, false, 5, true));
@@ -65,11 +67,14 @@ export async function stakingContract(token_id: string, options: Record<string, 
 
 //Get DAO token balance
 export async function getTokenBalance(token_id: string,options: Record<string, any>): Promise<void> {
-
-  const dao = getSmartContract(token_id, options.accountId);
+  network.setCurrent(options.network);
+  const token = token_id + "." + TOKEN_FACTORY_TESTNET;
+  console.log(token);
+  const dao = getSmartContract(token, options.accountId);
 
   const result = await dao.view("ft_balance_of",{
     account_id:options.daoAcc+".sputnikv2.testnet"
+    //account_id:"alan1.testnet"
   });
 
   console.log(inspect(result, false, 5, true));
@@ -77,6 +82,7 @@ export async function getTokenBalance(token_id: string,options: Record<string, a
 }
 //Get DAO token balance
 export async function getStakingContract(options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
 
   const dao = getDaoContract(options.daoAcc, options.accountId);
 

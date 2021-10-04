@@ -134,11 +134,12 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     
     dao_propose
       .command("payout <amount>")
-      .description("Propose the payout")
+      .description("Add a new proposal for payout")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-      .description("Add a new proposal for payout")
+      .option("-t, --target <targetId>", "Target NEAR ID for payment","test")
+      .option("--token <token>", "Pick a token for paying, default is NEAR","")
       .action(daoProposePayout);
     //Method for upgrading DAO policy
     dao_propose
@@ -147,25 +148,23 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-      .description("Add a new proposal for payout")
       .action(daoProposePolicy);
 
     dao_propose
       .command("addBounty <amount>")
-      .description("Propose adding a new bounty")
+      .description("Add a new proposal for Bounty")
       .option("--times <times>", "How many times this Bounty can be done")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-      .description("Add a new proposal for Bounty")
       .action(daoAddBounty);
 
     dao_propose
       .command("bountyDone <id>")
+      .description("Add a new proposal for a BountyDone")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-      .description("Add a new proposal for a BountyDone")
       .action(daoBountyDone);
     
     dao_propose
@@ -176,23 +175,22 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("--remove", "Indicate to remove the council member")
       .option("--role <role>", "Pick a different role to council member","council")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-      .description("Add a new proposal for payout")
       .action(daoProposeCouncil);
 
     dao_propose
       .command("tokenfarm <token_name> <token_symbol> <token_amount>")
       .description("Propose farm a new token")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--targetId <targetId>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("--accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-      .description("Add a new proposal for payout")
       .action(daoProposeTokenFarm);
 
     dao_propose
-      .command("call <DaoId> <MethodCall> <ArgsCall>")
+      .command("call <targetId> <methodCall> <argsCall>")
       .description("propose calling to a SC method")
-      .option("--factoryId <factoryId>","Choose a differente DAO factory: dao.<factoryId>.testnet","sputnikv2")
-      .option("--targetId <targetId>","Choose target smartcontract for calling")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--accountId <accountId>", "Use account as signer")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .action(daoProposeCall); 
 
