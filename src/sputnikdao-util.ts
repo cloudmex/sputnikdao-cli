@@ -90,14 +90,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--accountId <accountId>", "Use account as signer")
     .action(initStakingContract);
     */
-  program
-    .command("get_dao_list")
-    .description("get a list of bounties")
-    .option("--daoAcc <daoAcc>", "Factory Name")
-    .option("-a, --accountId <accountId>", "use account as signer")
-    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-    .action(daoGetDaoList);
-  
+
   program
     .command("get_bounties")
     .description("get a list of bounties")
@@ -125,12 +118,18 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .action(daoBountyGiveup);
   
   program
-    .command("deployfactory")
+    .command("deployfactory <factAcc>")
     .description("Create a new factory to create new Daos")
-    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-a, --accountId <accountId>", "use account as signer")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(factoryDeployCode);
+
+  program
+    .command("get_dao_list <factAcc>")
+    .description("get a list of daos from a factory")
+    .option("-a, --accountId <accountId>", "use account as signer")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(daoGetDaoList);
 
 
   const dao_propose = program.command("proposal");
