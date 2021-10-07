@@ -168,6 +168,24 @@ export async function daoProposeSelfUpgrade(options: Record<string, any>): Promi
 */
 
 }
+
+export async function daoProposePoll(question: string, options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
+  
+  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+
+
+  const addProposalResult = await dao.call("add_proposal", {
+    proposal: {
+      description: question,
+      kind: "Vote"
+    }
+  }, 200, ONE_NEAR.toString());
+
+  console.log(inspect(addProposalResult, false, 5, true));
+
+}
+
 export async function daoListProposals(options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
   const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
