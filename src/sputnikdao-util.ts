@@ -2,17 +2,12 @@
 
 import { program } from "commander";
 
-
-import { inspect } from "util";
 import * as near from "near-api-lite/lib/near-rpc.js";
-import { formatLargeNumbers, showNumbers } from "./util/format-near.js";
-import { getDaoContract, METAPOOL_CONTRACT_ACCOUNT} from "./util/setup.js";
-import { deleteFCAK } from "./commands/delete-keys.js";
 import { getTokenBalance, stakingContract, getStakingContract } from "./commands/staking-contract";
-import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals, daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoRemoveBlob, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, daoProposePolicy, daoProposeTokenFarm } from "./commands/dao.js";
+import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals,  daoRemoveBlob, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, } from "./commands/dao.js";
+import { daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoProposePolicy, daoProposeTokenFarm, daoProposePoll } from "./commands/proposals.js";
 import { daoGetDaoList, factoryDeployCode } from "./commands/factory.js";
 import {daoAddBounty, daoGetBounties,daoBountyClaim, daoBountyGiveup, daoBountyDone} from "./commands/bounties.js";
-import { SmartContract } from "near-api-lite";
 
 main(process.argv, process.env);
 
@@ -39,8 +34,6 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--accountId <accountId>", "Use account as signer")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoInfo);
-
-  
 
   program
     .command("openui")
@@ -143,12 +136,23 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .action(daoProposeSelfUpgrade);
+
     dao_propose
-      .command("upgrade <wasmFile>")
+      .command("upgrade <wasmFile> <targetId>")
       .description("Propose the upgrade of an external contract")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
       .action(daoProposeUpgrade);
+
+    dao_propose
+      .command("poll <question>")
+      .description("Propose a poll")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+      .action(daoProposePoll);
     
     dao_propose
       .command("payout <amount>")
