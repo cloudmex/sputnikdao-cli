@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import * as network from "near-api-lite/lib/network.js";
 
-export async function daoProposeUpgrade(wasmFile: string, options: Record<string, any>): Promise<void> {
+export async function daoProposeUpgrade(wasmFile: string, targetId:string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     const wasmInfo = getBlobHash(wasmFile);
   
@@ -22,11 +22,11 @@ export async function daoProposeUpgrade(wasmFile: string, options: Record<string
   
     const addProposalResult = await dao.call("add_proposal", {
       proposal: {
-        target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
-        description: "upgrade code",
+        target: targetId,
+        description: "Upgrade code",
         kind: {
           UpgradeRemote: {
-            receiver_id: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
+            receiver_id: targetId,
             method_name: "upgrade",
             hash: encodeBase58(wasmInfo.hash),
           }
