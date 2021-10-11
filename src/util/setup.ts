@@ -67,6 +67,18 @@ export function newGetCredentials(accountId: string,network: string): Credential
 }
 
 //------------------------------------
+export function getFactorySC(factory: string="fakefact", network:string="testnet"): string {
+  //const dao = new SmartContract("metapool.sputnik2.testnet");
+  let factorySC: string;
+  if(factory != null){
+    factorySC = (network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: factory;
+  }else{
+    factorySC= (network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: SPUTNIK_FACTORY_TESTNET;
+  }
+  return factorySC;
+}
+
+//------------------------------------
 export function configSigner(contract: SmartContract, signerAccountId: string): void {
   //config contract proxy credentials
   const credentials = getCredentials(signerAccountId);
@@ -81,10 +93,14 @@ export function multiConfigSigner(contract: SmartContract, signerAccountId: stri
   contract.signer_private_key = credentials.private_key;
 }
 //------------------------------------
-export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet", network:string="testnet"): SmartContract {
+export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet", factory: string ="fakefact", network:string="testnet"): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
-  let dao_acc:string=(network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+SPUTNIK_FACTORY_TESTNET;
-
+  let dao_acc:string
+  if(factory != null){
+    dao_acc = (network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+factory;
+  }else{
+    dao_acc = (network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+SPUTNIK_FACTORY_TESTNET;
+  }
   const dao = new SmartContract(dao_acc);
   configSigner(dao, SignerId);
   return dao;
