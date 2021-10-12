@@ -1,7 +1,7 @@
 import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT } from "../util/setup";
+import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, ONE_TENTH_OF_NEAR } from "../util/setup";
 import { option } from "commander";
 import * as network from "near-api-lite/lib/network.js";
 
@@ -31,7 +31,7 @@ export async function daoAddBounty( amount:number, options: Record<string, any>)
           }
         }
       }
-    }, 200, ONE_NEAR.toString());
+    }, 200, ONE_TENTH_OF_NEAR.toString());
     console.log(inspect(addBountyCall, false, 5, true));
 }
 
@@ -61,7 +61,7 @@ export async function daoBountyClaim( id:string, options: Record<string, any>): 
   const result = await dao.call("bounty_claim",{
       id: idbounty,
       deadline: deadline,
-  }, 200, ONE_NEAR.toString());
+  }, 200, ONE_TENTH_OF_NEAR.toString());
   console.log("Bounty Claimed");
 
 }
@@ -96,6 +96,6 @@ export async function daoBountyDone( id:string, options: Record<string, any>): P
         }
       }
     }
-  }, 200, ONE_NEAR.toString());
+  }, 200, ONE_TENTH_OF_NEAR.toString());
   console.log(inspect(bountyDoneCall, false, 5, true));
 }
