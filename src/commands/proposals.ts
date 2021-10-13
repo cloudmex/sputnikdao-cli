@@ -1,7 +1,7 @@
 import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58, yton } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, multiConfigSigner, getDaoContract,getSmartContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET } from "../util/setup";
+import { configSigner, multiConfigSigner, getDaoContract,getSmartContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET, ONE_TENTH_OF_NEAR } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import * as network from "near-api-lite/lib/network.js";
@@ -33,7 +33,7 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
           }
         }
       }
-    }, 200, ONE_NEAR.toString());
+    }, 200, ONE_TENTH_OF_NEAR.toString());
   
     console.log(inspect(addProposalResult, false, 5, true));
   
@@ -71,7 +71,7 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
           }
         }
       }
-    }, 200, ONE_NEAR.toString());
+    }, 200, ONE_TENTH_OF_NEAR.toString());
   
     console.log(inspect(addProposalResult, false, 5, true));
     /*
@@ -88,7 +88,7 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
           }
         }
       }
-    }, 200, ONE_NEAR.toString());
+    }, 200, ONE_TENTH_OF_NEAR.toString());
     console.log(inspect(addProposalResult, false, 5, true));
   */
   
@@ -105,7 +105,7 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
         description: question,
         kind: "Vote"
       }
-    }, 200, ONE_NEAR.toString());
+    }, 200, ONE_TENTH_OF_NEAR.toString());
   
     console.log(inspect(addProposalResult, false, 5, true));
   
@@ -114,14 +114,15 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
 
 export async function daoProposePayout(amount: number, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
+
+    console.log(ONE_TENTH_OF_NEAR.toString());
     let dao_account = options.daoAcc;
     //const dao = getDaoContract(dao_account,options.accountId);
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     let yocto_amount = ntoy(amount);
-    console.log(amount);
     //Propose a parget
     const target_id = (options.target!=undefined) ? options.target : options.accountId;
-    const token_id = options.token + "." + TOKEN_FACTORY_TESTNET
+    const token_id = (options.token!=undefined) ?  "" : options.token + "." + TOKEN_FACTORY_TESTNET ;
     //Compare if the token is not $NEAR (default)
     if(options.token!=""){
       const token_contract = getSmartContract(token_id,options.accountId);
@@ -145,7 +146,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
           }
         }
       }
-    }, 200, ONE_NEAR.toString());
+    }, 200, ONE_TENTH_OF_NEAR.toString());
   
     console.log(inspect(addProposalCall, false, 5, true));
   
@@ -195,7 +196,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
           }
         }
       }
-    }, 100, ONE_NEAR.toString());
+    }, 100, ONE_TENTH_OF_NEAR.toString());
   
     console.log(inspect(addProposalCall, false, 5, true));
   
@@ -218,7 +219,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
             }
           }
         }
-      }, 200, ONE_NEAR.toString());
+      }, 200, ONE_TENTH_OF_NEAR.toString());
   
     } else {
       addProposalCall = await dao.call("add_proposal", {
@@ -231,7 +232,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
             }
           }
         }
-      }, 200, ONE_NEAR.toString());
+      }, 200, ONE_TENTH_OF_NEAR.toString());
     }
   
     console.log(inspect(addProposalCall, false, 5, true));
@@ -258,7 +259,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
           }
         }
       }
-    }, 100, ONE_NEAR.toString());
+    }, 100, ONE_TENTH_OF_NEAR.toString());
   
     console.log(inspect(addProposalCall, false, 5, true));
   
@@ -280,7 +281,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
           }
         }
       }
-    }, 200, ONE_NEAR.toString());
+    }, 200, ONE_TENTH_OF_NEAR.toString());
   
     console.log(inspect(addProposalCall, false, 5, true));
   

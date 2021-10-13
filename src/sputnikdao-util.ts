@@ -169,7 +169,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-      .option("-t, --target <targetId>", "Target NEAR ID for payment","test")
+      .option("-t, --target <targetId>", "Target NEAR ID for payment")
       .option("--factory <factory>", "Factory deployed")
       .option("--token <token>", "Pick a token for paying, default is NEAR","")
       .action(daoProposePayout);

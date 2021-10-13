@@ -3,7 +3,8 @@ import * as fs from "fs";
 import * as os from "os";
 
 import { program } from "commander";
-import { SmartContract } from "near-api-lite";
+import { ONE_NEAR, SmartContract } from "near-api-lite";
+const BN = require('bn.js');
 
 export const hostname = os.hostname();
 export const prodMode = false;
@@ -17,7 +18,7 @@ export const SPUTNIK_WASM_PATH:string = "res/sputnikdao2-2021-09-28.wasm";
 export const METAPOOL_CONTRACT_ACCOUNT = prodMode ? "contract3.preprod-pool.near" : "contract3.preprod-pool.testnet";
 export const OPERATOR_ACCOUNT = prodMode ? "alantests.near" : "operator.preprod-pool." + NETWORK_ID;
 export const OWNER_ACCOUNT = "alan1." + NETWORK_ID;
-
+export const ONE_TENTH_OF_NEAR = ONE_NEAR.div(new BN(10));
 export const TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT = "contract3.preprod-pool.testnet";
 
 //--------------
