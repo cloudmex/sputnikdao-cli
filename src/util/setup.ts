@@ -3,7 +3,8 @@ import * as fs from "fs";
 import * as os from "os";
 
 import { program } from "commander";
-import { SmartContract } from "near-api-lite";
+import { ONE_NEAR, SmartContract } from "near-api-lite";
+const BN = require('bn.js');
 
 export const hostname = os.hostname();
 export const prodMode = false;
@@ -17,7 +18,7 @@ export const SPUTNIK_WASM_PATH:string = "res/sputnikdao2-2021-09-28.wasm";
 export const METAPOOL_CONTRACT_ACCOUNT = prodMode ? "contract3.preprod-pool.near" : "contract3.preprod-pool.testnet";
 export const OPERATOR_ACCOUNT = prodMode ? "alantests.near" : "operator.preprod-pool." + NETWORK_ID;
 export const OWNER_ACCOUNT = "alan1." + NETWORK_ID;
-
+export const ONE_TENTH_OF_NEAR = ONE_NEAR.div(new BN(10));
 export const TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT = "contract3.preprod-pool.testnet";
 
 //--------------
@@ -67,6 +68,18 @@ export function newGetCredentials(accountId: string,network: string): Credential
 }
 
 //------------------------------------
+export function getFactorySC(factory: string=SPUTNIK_FACTORY_TESTNET, network:string="testnet"): string {
+  //const dao = new SmartContract("metapool.sputnik2.testnet");
+  let factorySC: string;
+  if(factory != null){
+    factorySC = (network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: factory;
+  }else{
+    factorySC= (network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: SPUTNIK_FACTORY_TESTNET;
+  }
+  return factorySC;
+}
+
+//------------------------------------
 export function configSigner(contract: SmartContract, signerAccountId: string): void {
   //config contract proxy credentials
   const credentials = getCredentials(signerAccountId);
@@ -81,10 +94,14 @@ export function multiConfigSigner(contract: SmartContract, signerAccountId: stri
   contract.signer_private_key = credentials.private_key;
 }
 //------------------------------------
-export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet", network:string="testnet"): SmartContract {
+export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet", factory: string =SPUTNIK_FACTORY_TESTNET, network:string="testnet"): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
-  let dao_acc:string=(network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+SPUTNIK_FACTORY_TESTNET;
-
+  let dao_acc:string
+  if(factory != null){
+    dao_acc = (network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+factory;
+  }else{
+    dao_acc = (network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+SPUTNIK_FACTORY_TESTNET;
+  }
   const dao = new SmartContract(dao_acc);
   configSigner(dao, SignerId);
   return dao;

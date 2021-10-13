@@ -47,7 +47,8 @@ export async function stakingContract(token_id: string, options: Record<string, 
   
   //Generate a new proposal in DAO for 
   //adopting new staking contract
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  //const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   // '{"proposal": {"description": "Adopt nALAN token for voting", "kind": {"SetStakingContract": {"staking_id": "alan2-staking.generic.testnet"}}}}'
   const addProposalCall = await dao.call("add_proposal", {
     proposal: {
@@ -84,7 +85,8 @@ export async function getTokenBalance(token_id: string,options: Record<string, a
 export async function getStakingContract(options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
 
-  const dao = getDaoContract(options.daoAcc, options.accountId);
+  //const dao = getDaoContract(options.daoAcc, options.accountId);
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
 
   const result = await dao.view("get_staking_contract");
 
