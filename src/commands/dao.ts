@@ -59,7 +59,7 @@ export async function daoDeployCode(): Promise<void> {
 
 export async function daoInfo(options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
-  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   console.log("location: ", dao.contract_account);
 
   const result = await dao.view("get_policy");
@@ -76,7 +76,7 @@ export async function daoUI(options: Record<string, any>): Promise<void> {
 
 export async function daoGetPolicy(options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
-  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
 
   const result = await dao.view("get_policy");
 
@@ -86,7 +86,7 @@ export async function daoGetPolicy(options: Record<string, any>): Promise<void> 
 
 export async function daoListProposals(options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
-  const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
 
   const result = await dao.view("get_proposals", { from_index: 0, limit: 50 });
 
