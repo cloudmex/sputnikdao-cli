@@ -68,7 +68,7 @@ export function newGetCredentials(accountId: string,network: string): Credential
 }
 
 //------------------------------------
-export function getFactorySC(factory: string="fakefact", network:string="testnet"): string {
+export function getFactorySC(factory: string=SPUTNIK_FACTORY_TESTNET, network:string="testnet"): string {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
   let factorySC: string;
   if(factory != null){
@@ -94,7 +94,7 @@ export function multiConfigSigner(contract: SmartContract, signerAccountId: stri
   contract.signer_private_key = credentials.private_key;
 }
 //------------------------------------
-export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet", factory: string ="fakefact", network:string="testnet"): SmartContract {
+export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet", factory: string =SPUTNIK_FACTORY_TESTNET, network:string="testnet"): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
   let dao_acc:string
   if(factory != null){
