@@ -10,7 +10,8 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
     network.setCurrent(options.network);
     const wasmInfo = getBlobHash(wasmFile);
   
-    const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   
     if (!options.skip) {
       //store the blob
@@ -43,7 +44,8 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
     
     const wasmInfo = getBlobHash(SPUTNIK_WASM_PATH);
   
-    const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     if (!options.skip) {
       //store the blob
       const resultBase58Hash = await dao.call(
@@ -95,8 +97,8 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
   export async function daoProposePoll(question: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     
-    const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
-  
+    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   
     const addProposalResult = await dao.call("add_proposal", {
       proposal: {
@@ -115,7 +117,8 @@ export async function daoProposePayout(amount: number, options: Record<string, a
 
     console.log(ONE_TENTH_OF_NEAR.toString());
     let dao_account = options.daoAcc;
-    const dao = getDaoContract(dao_account,options.accountId);
+    //const dao = getDaoContract(dao_account,options.accountId);
+    const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     let yocto_amount = ntoy(amount);
     //Propose a parget
     const target_id = (options.target!=undefined) ? options.target : options.accountId;
@@ -173,7 +176,8 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     const token_args_base_64 = encodeBase64(decodeUTF8(JSON.stringify(token_args)));
     const token_factory=(options.network=="mainnet") ? TOKEN_FACTORY_MAINNET: TOKEN_FACTORY_TESTNET;
     
-    const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     const addProposalCall = await dao.call("add_proposal", {
       proposal: {
         //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
@@ -200,7 +204,8 @@ export async function daoProposePayout(amount: number, options: Record<string, a
   export async function daoProposeCouncil(council: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
   
-    const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     //In case that remove option was called
     let addProposalCall;
     if (options.remove) {
@@ -237,7 +242,8 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     network.setCurrent(options.network);
   
     let dao_account = options.daoAcc;
-    const dao = getDaoContract(options.daoAcc, options.accountId);
+    //const dao = getDaoContract(options.daoAcc, options.accountId);
+    const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   
     console.log(methodCall);
     console.log(argsCall);
@@ -262,7 +268,8 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     network.setCurrent(options.network);
     
     const new_policy: JSON = JSON.parse(fs.readFileSync(policyFile, 'utf8'));
-    const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
+    const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     console.log(new_policy);
     const addProposalCall = await dao.call("add_proposal", {
       proposal: {
