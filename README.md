@@ -6,15 +6,36 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
   - [Table of contents](#table-of-contents)
   - [Post in Governance Forum](#post-in-governance-forum)
     - [Installation and requirements](#installation-and-requirements)
-  - [Overview](#overview)
+  - [Miscelaneous commands](#miscelaneous-commands)
     - [`sputnikdao create`](#sputnikdao-create)
+    - [`sputnikdao info`](#sputnikdao-info)
+    - [`sputnikdao get_policy`](#sputnikdao-get_policy)
+    - [`sputnikdao openui`](#sputnikdao-openui)
+    - [`sputnikdao get-staking`](#sputnikdao-get-staking)
+    - [`sputnikdao token-balance`](#sputnikdao-token-balance)
+    - [`sputnikdao get_bounties`](#sputnikdao-get_bounties)
+    - [`sputnikdao bounty_claim`](#sputnikdao-bounty_claim)
+    - [`sputnikdao bounty_giveup`](#sputnikdao-bounty_giveup)
+  - [Listing commands](#listing-commands)
+    - [`sputnikdao list proposals`](#sputnikdao-list-proposals)
+    - [`sputnikdao list bounties`](#sputnikdao-list-bounties)
+    - [`sputnikdao list daos`](#sputnikdao-list-daos)
+  - [Proposals commands](#proposals-commands)
     - [`sputnikdao proposal payout`](#sputnikdao-proposal-payout)
     - [`sputnikdao proposal policy`](#sputnikdao-proposal-policy)
     - [`sputnikdao proposal council`](#sputnikdao-proposal-council)
     - [`sputnikdao proposal tokenfarm`](#sputnikdao-proposal-tokenfarm)
+    - [`sputnikdao proposal staking-contract`](#sputnikdao-proposal-staking-contract)
     - [`sputnikdao proposal addBounty`](#sputnikdao-proposal-addbounty)
-    - [`sputnikdao get_bounties`](#sputnikdao-get_bounties)
-    - [`Under development`](#under-development)
+    - [`sputnikdao proposal bountyDone`](#sputnikdao-proposal-bountydone)
+    - [`sputnikdao proposal poll`](#sputnikdao-proposal-poll)
+    - [`sputnikdao proposal call`](#sputnikdao-proposal-call)
+    - [`sputnikdao proposal self-upgrade`](#sputnikdao-proposal-self-upgrade)
+    - [`sputnikdao proposal upgrade`](#sputnikdao-proposal-upgrade)
+  - [Voting commands](#voting-commands)
+    - [`sputnikdao vote approve`](#sputnikdao-vote-approve)
+    - [`sputnikdao vote unapprove`](#sputnikdao-vote-unapprove)
+    - [`sputnikdao vote reject`](#sputnikdao-vote-reject)
   - [User stories](#user-stories)
     - [Creating a DAO](#creating-a-dao)
     - [Adding a proposal](#adding-a-proposal)
@@ -33,31 +54,11 @@ You can follow the discussion and add your own ideas and colaboration in [the po
 
 > Make sure you have a current version of `npm` and `NodeJS` installed.
 > Have a [NEAR account](https://learn.figment.io/network-documentation/near/tutorials/intro-pathway-write-and-deploy-your-first-near-smart-contract/2.-creating-your-first-near-account-using-the-sdk) 
-
-## Overview
-
-_Click on a command for more information and examples._
-| Ready commands |
-| Command                                               | Description                                             |
-| ----------------------------------------------------- | ------------------------------------------------------- |
-| **Deploy a new sputnik DAO**                          |                                                         |
-| [`sputnikdao create`](#sputnikdao-create)             | Creates a new Sputnik V2 DAO in testnet                 |                                                                                             
-| **Add proposal**                                      |                                                         |
-| [`sputnikdao proposal payout`](#sputnikdao-proposal-payout)            | Request a payout                       |
-| [`sputnikdao proposal policy`](#sputnikdao-proposal-policy)            | Upgrade DAO policy                     |
-| [`sputnikdao proposal council`](#sputnikdao-proposal-council)            | Add a council member/Also can propose to remove|
-| [`sputnikdao proposal tokenfarm`](#sputnikdao-proposal-tokenfarm)            | Farm a new fungible token|
-| [`sputnikdao proposal addBounty`](#sputnikdao-proposal-addbounty)            | Add a bounty |
-| **VOTE**                                              |                                        |                                                                                                
-| [`sputnikdao vote approve <proposal_id> `](#voting-a-proposal)           | Approve a proposal |
-| [`sputnikdao vote unapprove <proposal_id> `](#voting-a-proposal)            | Unapprove a proposal |
-| **Listing**                                              |                      |                                                                                                                  
-| [`sputnikdao list proposals`](#near-create-account)            | List proposals|
-| [`sputnikdao list get_bounties`](#sputnikdao-get_bounties)           | List bounties |
-
-
+> Use near CLI and login
 
 ---
+## Miscelaneous commands
+
 ### `sputnikdao create`
 
 > Create a new Sputnik V2 DAO.
@@ -86,41 +87,11 @@ result.status.SuccessValue: true
 </details>
 
 ---
+### `sputnikdao info`
 
-### `sputnikdao proposal payout`
+> Create a new Sputnik V2 DAO.
 
-> Do a proposal requesting a payout for signer.
-
--   arguments: `amount`
--   options: `daoAcc` `accountId`
-
-**Example:**
-
-```bash
-AMOUNT=5
-DAO_ACCOUNT=mynewdao1
-SIGNER_ACCOUNT=alan1.testnet
-sputnikdao proposal payout $AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
-```
-
-<details>
-<summary> <strong>Example Response</strong> </summary>
-<p>
-
-```
-result.status.SuccessValue: 0
-```
-
-</p>
-</details>
-
----
-
-### `sputnikdao proposal policy`
-
-> Updates DAO voting policy recovering from a JSON file.
-
--   arguments: `policyFile`
+-   arguments: 
 -   options: `daoAcc` `accountId`
 
 **Example:**
@@ -128,7 +99,7 @@ result.status.SuccessValue: 0
 ```bash
 DAO_ACCOUNT=mynewdao1
 SIGNER_ACCOUNT=alan1.testnet
-sputnikdao proposal policy new_policy.json --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+sputnikdao info --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 ```
 
 <details>
@@ -136,28 +107,26 @@ sputnikdao proposal policy new_policy.json --daoAcc $DAO_ACCOUNT --accountId $SI
 <p>
 
 ```
-result.status.SuccessValue: 1
+result.status.SuccessValue: true
 ```
 
 </p>
 </details>
 
 ---
+### `sputnikdao get_policy`
 
-### `sputnikdao proposal council`
+> Create a new Sputnik V2 DAO.
 
-> Creates a proposal for adding or removing a council member.
-
--   arguments: `council`
--   options: `daoAcc` `accountId` `remove` `role`
+-   arguments: 
+-   options: `daoAcc` `accountId`
 
 **Example:**
 
 ```bash
 DAO_ACCOUNT=mynewdao1
 SIGNER_ACCOUNT=alan1.testnet
-COUNCIL_ACCOUNT=alantest.testnet
-sputnikdao proposal council $COUNCIL_ACCOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+sputnikdao get_policy --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 ```
 
 <details>
@@ -165,31 +134,51 @@ sputnikdao proposal council $COUNCIL_ACCOUNT --daoAcc $DAO_ACCOUNT --accountId $
 <p>
 
 ```
-result.status.SuccessValue: 1
+result.status.SuccessValue: true
 ```
 
 </p>
 </details>
 
 ---
+### `sputnikdao openui`
 
-### `sputnikdao proposal tokenfarm`
+> Create a new Sputnik V2 DAO.
 
-> Creates a proposal for farming a new token.
+-   arguments: 
+-   options:
 
--   arguments: `token_name` `token_symbol` `token_amount`
--   options: `daoAcc` `accountId` `remove` `role`
+**Example:**
+
+```bash
+sputnikdao openui
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+Opens UI web site
+```
+
+</p>
+</details>
+
+---
+### `sputnikdao get-staking`
+
+> Create a new Sputnik V2 DAO.
+
+-   arguments: 
+-   options: `daoAcc` `accountId`
 
 **Example:**
 
 ```bash
 DAO_ACCOUNT=mynewdao1
 SIGNER_ACCOUNT=alan1.testnet
-COUNCIL_ACCOUNT=alantest.testnet
-TOKEN_NAME=alan_token
-TOKEN_SYM=ALAN
-TOKEN_AMOUNT=100000
-sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+sputnikdao get_staking --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 ```
 
 <details>
@@ -197,25 +186,26 @@ sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO
 <p>
 
 ```
-result.status.SuccessValue: 1
+result.status.SuccessValue: true
 ```
 
 </p>
 </details>
 
 ---
+### `sputnikdao token-balance`
 
-### `sputnikdao proposal addBounty`
+> Create a new Sputnik V2 DAO.
 
-> Create a proposal for a new Bounty.
-
--   arguments: `mount`
--   options: `times` `daoAcc` `accountId`
+-   arguments: 
+-   options: `daoAcc` `accountId`
 
 **Example:**
 
 ```bash
-sputnikdao proposal addBounty 2 --times 3 --daoAcc mydao_canales --accountId joehank.testnet
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+sputnikdao token-balance --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 ```
 
 <details>
@@ -223,14 +213,14 @@ sputnikdao proposal addBounty 2 --times 3 --daoAcc mydao_canales --accountId joe
 <p>
 
 ```
-result.status.SuccessValue: 1
-1
+result.status.SuccessValue: true
 ```
 
 </p>
 </details>
 
 ---
+
 
 ### `sputnikdao get_bounties`
 
@@ -355,7 +345,263 @@ Bounty Give Up Done
 </details>
 
 ---
+## Listing commands
 
+### `sputnikdao list proposals`
+
+> Give up for a Bounty claimed.
+
+-   arguments: 
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao list proposals --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+Bounty Give Up Done
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao list bounties`
+
+> Give up for a Bounty claimed.
+
+-   arguments: 
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao list bounties --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+Bounty Give Up Done
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao list daos`
+
+> Give up for a Bounty claimed.
+
+-   arguments: `factoryAcc`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao list daos <factoryAcc> --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+Bounty Give Up Done
+```
+
+</p>
+</details>
+
+---
+
+## Proposals commands
+
+### `sputnikdao proposal payout`
+
+> Do a proposal requesting a payout for signer.
+
+-   arguments: `amount`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+AMOUNT=5
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+sputnikdao proposal payout $AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 0
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal policy`
+
+> Updates DAO voting policy recovering from a JSON file.
+
+-   arguments: `policyFile`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+sputnikdao proposal policy new_policy.json --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal council`
+
+> Creates a proposal for adding or removing a council member.
+
+-   arguments: `council`
+-   options: `daoAcc` `accountId` `remove` `role`
+
+**Example:**
+
+```bash
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+COUNCIL_ACCOUNT=alantest.testnet
+sputnikdao proposal council $COUNCIL_ACCOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal tokenfarm`
+
+> Creates a proposal for farming a new token.
+
+-   arguments: `token_name` `token_symbol` `token_amount`
+-   options: `daoAcc` `accountId` `remove` `role`
+
+**Example:**
+
+```bash
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+COUNCIL_ACCOUNT=alantest.testnet
+TOKEN_NAME=alan_token
+TOKEN_SYM=ALAN
+TOKEN_AMOUNT=100000
+sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+```
+
+</p>
+</details>
+
+---
+### `sputnikdao proposal staking-contract`
+
+> Creates a proposal for farming a new token.
+
+-   arguments: `token_name` `token_symbol` `token_amount`
+-   options: `daoAcc` `accountId` `remove` `role`
+
+**Example:**
+
+```bash
+DAO_ACCOUNT=mynewdao1
+SIGNER_ACCOUNT=alan1.testnet
+COUNCIL_ACCOUNT=alantest.testnet
+TOKEN_NAME=alan_token
+TOKEN_SYM=ALAN
+TOKEN_AMOUNT=100000
+sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+```
+
+</p>
+</details>
+
+---
+
+### `sputnikdao proposal addBounty`
+
+> Create a proposal for a new Bounty.
+
+-   arguments: `mount`
+-   options: `times` `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal addBounty 2 --times 3 --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 1
+1
+```
+
+</p>
+</details>
+
+---
 ### `sputnikdao proposal bountyDone`
 
 > Add a proposal for a Bounty Done.
@@ -382,7 +628,190 @@ result.status.SuccessValue: 2
 </details>
 
 ---
+### `sputnikdao proposal poll`
 
+> Add a proposal for a Bounty Done.
+
+-   arguments: `question`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal vote "Is this a poll" --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 2
+2
+```
+
+</p>
+</details>
+
+---
+### `sputnikdao proposal call`
+
+> Add a proposal for a Bounty Done.
+
+-   arguments: `question`
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal vote "Is this a poll" --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 2
+2
+```
+
+</p>
+</details>
+
+---
+### `sputnikdao proposal self-upgrade`
+
+> Add a proposal for a self upgrading DAO contract.
+
+-   arguments: 
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal self-upgrade --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 2
+2
+```
+
+</p>
+</details>
+
+---
+### `sputnikdao proposal upgrade`
+
+> Add a proposal for a self upgrading DAO contract.
+
+-   arguments: 
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal self-upgrade --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 2
+2
+```
+
+</p>
+</details>
+
+---
+## Voting commands
+
+### `sputnikdao vote approve`
+
+> Add a proposal for a self upgrading DAO contract.
+
+-   arguments: 
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal self-upgrade --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 2
+2
+```
+
+</p>
+</details>
+
+---
+### `sputnikdao vote unapprove`
+
+> Add a proposal for a self upgrading DAO contract.
+
+-   arguments: 
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal self-upgrade --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 2
+2
+```
+
+</p>
+</details>
+
+---
+### `sputnikdao vote reject`
+
+> Add a proposal for a self upgrading DAO contract.
+
+-   arguments: 
+-   options: `daoAcc` `accountId`
+
+**Example:**
+
+```bash
+sputnikdao proposal self-upgrade --daoAcc mydao_canales --accountId joehank.testnet
+```
+
+<details>
+<summary> <strong>Example Response</strong> </summary>
+<p>
+
+```
+result.status.SuccessValue: 2
+2
+```
+
+</p>
+</details>
+
+---
 ## User stories 
 
 ### Creating a DAO

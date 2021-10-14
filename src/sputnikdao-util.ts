@@ -90,16 +90,6 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     */
 
   program
-    .command("get_bounties")
-    .description("get a list of bounties")
-    .option("--id <id>", "Id to get a specific bounty")
-    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
-    .option("-a, --accountId <accountId>", "use account as signer")
-    .option("--factory <factory>", "Factory deployed")
-    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-    .action(daoGetBounties);
-
-  program
     .command("bounty_claim <idbounty>")
     .description("claim a bounty")
     .option("--deadline <deadline>", "This is equivalent time in days, 1000 is 7 days")
@@ -124,13 +114,6 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("-a, --accountId <accountId>", "use account as signer")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(factoryDeployCode);
-
-  program
-    .command("get_dao_list <factAcc>")
-    .description("get a list of daos from a factory")
-    .option("-a, --accountId <accountId>", "use account as signer")
-    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-    .action(daoGetDaoList);
 
 
   const dao_propose = program.command("proposal");
@@ -282,6 +265,24 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--factory <factory>", "Factory deployed")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoListProposals);
+
+
+  dao_list
+    .command("bounties")
+    .description("get a list of bounties")
+    .option("--id <id>", "Id to get a specific bounty")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("-a, --accountId <accountId>", "use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(daoGetBounties);
+
+  dao_list
+    .command("daos <factAcc>")
+    .description("get a list of daos from a factory")
+    .option("-a, --accountId <accountId>", "use account as signer")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(daoGetDaoList);
 
   dao_list
     .command("hash <wasmFile>")
