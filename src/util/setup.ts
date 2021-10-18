@@ -19,7 +19,7 @@ export const METAPOOL_CONTRACT_ACCOUNT = prodMode ? "contract3.preprod-pool.near
 export const OPERATOR_ACCOUNT = prodMode ? "alantests.near" : "operator.preprod-pool." + NETWORK_ID;
 export const OWNER_ACCOUNT = "alan1." + NETWORK_ID;
 //For min bond
-export const ONE_TENTH_OF_NEAR = ONE_NEAR.div(new BN(5));
+export const ONE_TENTH_OF_NEAR = ONE_NEAR.div(new BN(2));
 export const TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT = "contract3.preprod-pool.testnet";
 
 //--------------
