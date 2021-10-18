@@ -13,7 +13,6 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
     - [`sputnikdao openui`](#sputnikdao-openui)
     - [`sputnikdao get-staking`](#sputnikdao-get-staking)
     - [`sputnikdao token-balance`](#sputnikdao-token-balance)
-    - [`sputnikdao get_bounties`](#sputnikdao-get_bounties)
     - [`sputnikdao bounty_claim`](#sputnikdao-bounty_claim)
     - [`sputnikdao bounty_giveup`](#sputnikdao-bounty_giveup)
   - [Listing commands](#listing-commands)
@@ -89,7 +88,7 @@ result.status.SuccessValue: true
 ---
 ### `sputnikdao info`
 
-> Create a new Sputnik V2 DAO.
+> Gets info from a Sputnik DAO.
 
 -   arguments: 
 -   options: `daoAcc` `accountId`
@@ -143,7 +142,7 @@ result.status.SuccessValue: true
 ---
 ### `sputnikdao openui`
 
-> Create a new Sputnik V2 DAO.
+> Open current sputnik UI.
 
 -   arguments: 
 -   options:
@@ -168,7 +167,7 @@ Opens UI web site
 ---
 ### `sputnikdao get-staking`
 
-> Create a new Sputnik V2 DAO.
+> Recovers staking contract attached to DAO.
 
 -   arguments: 
 -   options: `daoAcc` `accountId`
@@ -176,9 +175,9 @@ Opens UI web site
 **Example:**
 
 ```bash
-DAO_ACCOUNT=mynewdao1
+DAO_ACCOUNT=mydao_alan6
 SIGNER_ACCOUNT=alan1.testnet
-sputnikdao get_staking --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+sputnikdao get-staking --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 ```
 
 <details>
@@ -186,7 +185,7 @@ sputnikdao get_staking --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 <p>
 
 ```
-result.status.SuccessValue: true
+'staking-149576567.generic.testnet'
 ```
 
 </p>
@@ -195,9 +194,9 @@ result.status.SuccessValue: true
 ---
 ### `sputnikdao token-balance`
 
-> Create a new Sputnik V2 DAO.
+> Recover balance from a custom token.
 
--   arguments: 
+-   arguments: `token_id`
 -   options: `daoAcc` `accountId`
 
 **Example:**
@@ -205,7 +204,8 @@ result.status.SuccessValue: true
 ```bash
 DAO_ACCOUNT=mynewdao1
 SIGNER_ACCOUNT=alan1.testnet
-sputnikdao token-balance --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
+TOKEN_ID=nalan9
+sputnikdao token-balance $TOKEN_ID --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT 
 ```
 
 <details>
@@ -213,80 +213,7 @@ sputnikdao token-balance --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 <p>
 
 ```
-result.status.SuccessValue: true
-```
-
-</p>
-</details>
-
----
-
-
-### `sputnikdao get_bounties`
-
-> Get the list of all the Bounties approved in the vote politicy.
-
--   options: `daoAcc` `accountId`
-
-**Example:**
-
-```bash
-sputnikdao get_bounties --daoAcc mydao_canales --accountId joehank.testnet
-```
-
-<details>
-<summary> <strong>Example Response</strong> </summary>
-<p>
-
-```
-{
-    id: 0,
-    description: 'propose a bounty',
-    token: '',
-    amount: '1000000000000000000000000',
-    times: 2,
-    max_deadline: '1000'
-  },
-{
-  id: 1,
-  description: 'propose a bounty',
-  token: '',
-  amount: '2000000000000000000000000',
-  times: 3,
-  max_deadline: '1000'
-}
-
-```
-
-</p>
-</details>
-
-<p></p>
-
-> Get the information of an specific Bounty approved in the vote politicy.
-
--   options: `id` `daoAcc` `accountId`
-
-**Example:**
-
-```bash
-sputnikdao get_bounties --id 1 --daoAcc mydao_canales -a joehank.testnet
-```
-
-<details>
-<summary> <strong>Example Response</strong> </summary>
-<p>
-
-```
-{
-  id: 1,
-  description: 'propose a bounty',
-  token: '',
-  amount: '2000000000000000000000000',
-  times: 3,
-  max_deadline: '1000'
-}
-
+'1000000000'
 ```
 
 </p>
@@ -304,7 +231,11 @@ sputnikdao get_bounties --id 1 --daoAcc mydao_canales -a joehank.testnet
 **Example:**
 
 ```bash
-sputnikdao bounty_claim 1 --deadline 1000 --daoAcc mydao_canales --accountId joehank.testnet
+BOUNTY_ID=1
+BOUNTY_DEADLINE=1000
+DAO_ACCOUNT=mydao_canales
+ACCOUNT_ID=joehank.testnet
+sputnikdao bounty_claim $BOUNTY_ID --deadline $BOUNTY_DEADLINE --daoAcc  $DAO_ACCOUNT --accountId $ACCOUNT_ID
 ```
 
 <details>
@@ -330,7 +261,10 @@ Bounty Claimed
 **Example:**
 
 ```bash
-sputnikdao bounty_giveup 1 --daoAcc mydao_canales --accountId joehank.testnet
+BOUNTY_ID=1
+DAO_ACCOUNT=mydao_canales
+ACCOUNT_ID=joehank.testnet
+sputnikdao bounty_giveup $BOUNTY_ID --daoAcc $DAO_ACCOUNT --accountId $ACCOUNT_ID
 ```
 
 <details>
@@ -349,7 +283,7 @@ Bounty Give Up Done
 
 ### `sputnikdao list proposals`
 
-> Give up for a Bounty claimed.
+> Returns list of proposals in a DAO.
 
 -   arguments: 
 -   options: `daoAcc` `accountId`
@@ -357,7 +291,9 @@ Bounty Give Up Done
 **Example:**
 
 ```bash
-sputnikdao list proposals --daoAcc mydao_canales --accountId joehank.testnet
+DAO_ACCOUNT=mydao_canales
+ACCOUNT_ID=joehank.testnet
+sputnikdao list proposals --daoAcc $DAO_ACCOUNT --accountId $ACCOUNT_ID
 ```
 
 <details>
@@ -365,7 +301,25 @@ sputnikdao list proposals --daoAcc mydao_canales --accountId joehank.testnet
 <p>
 
 ```
-Bounty Give Up Done
+[
+  {
+    id: 0,
+    proposer: 'joehank.testnet',
+    description: 'propose a payout',
+    kind: {
+      Transfer: {
+        token_id: '',
+        receiver_id: 'joehank.testnet',
+        amount: '5000000000000000000000000',
+        msg: null
+      }
+    },
+    status: 'Approved',
+    vote_counts: { council: [ 1, 0, 0 ] },
+    votes: { 'joehank.testnet': 'Approve' },
+    submission_time: '1630543224324233593'
+  }
+]
 ```
 
 </p>
@@ -375,7 +329,7 @@ Bounty Give Up Done
 
 ### `sputnikdao list bounties`
 
-> Give up for a Bounty claimed.
+> Returns list of bounties in a dao.
 
 -   arguments: 
 -   options: `daoAcc` `accountId`
@@ -383,7 +337,9 @@ Bounty Give Up Done
 **Example:**
 
 ```bash
-sputnikdao list bounties --daoAcc mydao_canales --accountId joehank.testnet
+DAO_ACCOUNT=mydao_canales
+ACCOUNT_ID=joehank.testnet
+sputnikdao list bounties --daoAcc $DAO_ACCOUNT --accountId $ACCOUNT_ID
 ```
 
 <details>
@@ -391,7 +347,24 @@ sputnikdao list bounties --daoAcc mydao_canales --accountId joehank.testnet
 <p>
 
 ```
-Bounty Give Up Done
+[
+  {
+    id: 0,
+    description: 'propose a bounty',
+    token: '',
+    amount: '1000000000000000000000000',
+    times: 0,
+    max_deadline: '1000'
+  },
+  {
+    id: 1,
+    description: 'propose a bounty',
+    token: '',
+    amount: '2000000000000000000000000',
+    times: 3,
+    max_deadline: '1000'
+  }
+]
 ```
 
 </p>
@@ -409,7 +382,10 @@ Bounty Give Up Done
 **Example:**
 
 ```bash
-sputnikdao list daos <factoryAcc> --daoAcc mydao_canales --accountId joehank.testnet
+FACTORY_ID=daofactory.testnet
+DAO_ACCOUNT=mydao_canales
+ACCOUNT_ID=joehank.testnet
+sputnikdao list daos $FACTORY_ID --daoAcc $DAO_ACCOUNT --accountId $ACCOUNT_ID
 ```
 
 <details>
@@ -417,7 +393,18 @@ sputnikdao list daos <factoryAcc> --daoAcc mydao_canales --accountId joehank.tes
 <p>
 
 ```
-Bounty Give Up Done
+[
+  'newdao.tutorials.testnet',
+  'dao2.tutorials.testnet',
+  'dao3.tutorials.testnet',
+  'daos.tutorials.testnet',
+  'daos1.tutorials.testnet'
+]
+SmartContract {
+  contract_account: 'tutorials.testnet',
+  signer: 'tutorials.testnet',
+  signer_private_key: 'ed25519:4yQWH8NAgbprGFvRRZnq4H1LTGgAXCEkUNRNaLxamuVAWbw8LJ8BU4nnhsgTHuKsFbSkNTBP67o7BkNAmgdYyazZ'
+}
 ```
 
 </p>
@@ -621,7 +608,6 @@ sputnikdao proposal bountyDone 1 --daoAcc mydao_canales --accountId joehank.test
 
 ```
 result.status.SuccessValue: 2
-2
 ```
 
 </p>
