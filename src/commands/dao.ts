@@ -16,9 +16,9 @@ const chalk = require('chalk');  // colorize output
 const open = require('open');    // open URL in default browser
 const { KeyPair, utils, transactions } = require('near-api-js');
 //const verify = require('./utils/verify-account');
-const capture = require('./utils/capture-login-success');
+//const capture = require('./utils/capture-login-success');
 
-const eventtracking = require('./utils/eventtracking');
+//const eventtracking = require('./utils/eventtracking');
 
 // open a given URL in browser in a safe way.
 const openUrl = async function(url:any) {
