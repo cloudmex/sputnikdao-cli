@@ -106,7 +106,29 @@ sputnikdao info --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 <p>
 
 ```
-result.status.SuccessValue: true
+{
+  roles: [
+    {
+      name: 'all',
+      kind: 'Everyone',
+      permissions: [ '*:AddProposal', '*:Finalize' ],
+      vote_policy: {}
+    },
+    {
+      name: 'council',
+      kind: { Group: [ 'alan1.testnet' ] },
+      permissions: [ '*:*' ],
+      vote_policy: {
+        Group: { weight_kind: 'RoleWeight', quorum: '0', threshold: [ 1, 8 ] }
+      }
+    }
+  ],
+  default_vote_policy: { weight_kind: 'RoleWeight', quorum: '0', threshold: [ 1, 2 ] },
+  proposal_bond: '10000000000000000000000',
+  proposal_period: '604800000000000',
+  bounty_bond: '1000000000000000000000000',
+  bounty_forgiveness_period: '86400000000000'
+}
 ```
 
 </p>
@@ -133,7 +155,29 @@ sputnikdao get_policy --daoAcc $DAO_ACCOUNT --accountId $SIGNER_ACCOUNT
 <p>
 
 ```
-result.status.SuccessValue: true
+{
+  roles: [
+    {
+      name: 'all',
+      kind: 'Everyone',
+      permissions: [ '*:AddProposal', '*:Finalize' ],
+      vote_policy: {}
+    },
+    {
+      name: 'council',
+      kind: { Group: [ 'alan1.testnet' ] },
+      permissions: [ '*:*' ],
+      vote_policy: {
+        Group: { weight_kind: 'RoleWeight', quorum: '0', threshold: [ 1, 8 ] }
+      }
+    }
+  ],
+  default_vote_policy: { weight_kind: 'RoleWeight', quorum: '0', threshold: [ 1, 2 ] },
+  proposal_bond: '10000000000000000000000',
+  proposal_period: '604800000000000',
+  bounty_bond: '1000000000000000000000000',
+  bounty_forgiveness_period: '86400000000000'
+}
 ```
 
 </p>
@@ -738,8 +782,7 @@ sputnikdao proposal self-upgrade --daoAcc mydao_canales --accountId joehank.test
 <p>
 
 ```
-result.status.SuccessValue: 2
-2
+'success'
 ```
 
 </p>
@@ -764,8 +807,7 @@ sputnikdao proposal self-upgrade --daoAcc mydao_canales --accountId joehank.test
 <p>
 
 ```
-result.status.SuccessValue: 2
-2
+'success'
 ```
 
 </p>
@@ -790,8 +832,7 @@ sputnikdao proposal self-upgrade --daoAcc mydao_canales --accountId joehank.test
 <p>
 
 ```
-result.status.SuccessValue: 2
-2
+'success'
 ```
 
 </p>

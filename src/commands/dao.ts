@@ -6,20 +6,6 @@ import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import * as network from "near-api-lite/lib/network.js";
 
-const ncp = require('ncp').ncp;
-ncp.limit = 16;
-const rimraf = require('rimraf');
-const readline = require('readline');
-const URL = require('url').URL;
-const qs = require('querystring');
-const chalk = require('chalk');  // colorize output
-const open = require('open');    // open URL in default browser
-const { KeyPair, utils, transactions } = require('near-api-js');
-//const verify = require('./utils/verify-account');
-//const capture = require('./utils/capture-login-success');
-
-//const eventtracking = require('./utils/eventtracking');
-
 // open a given URL in browser in a safe way.
 const openUrl = async function(url:any) {
   try {
@@ -110,13 +96,14 @@ export async function login(options: Record<string, any>): Promise<void> {
   rl.close();
   capture.cancel();
   // verify the accountId if we captured it or ...
-  try {
+  /*try {
       const success = await verify(accountId, keyPair, options);
       await eventtracking.track(eventtracking.EVENT_ID_LOGIN_END, { success }, options);
   } catch (error:any) {
       await eventtracking.track(eventtracking.EVENT_ID_LOGIN_END, { success: false, error }, options);
       console.error('Failed to verify accountId.', error.message);
   } */
+
 }
 export async function daoCreate(dao_name: string, council: string, options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);

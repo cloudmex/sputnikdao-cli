@@ -15,11 +15,11 @@ async function main(argv: string[], _env: Record<string, unknown>) {
 
   near.setLogLevel(1);
 
-  program
+  /*program
     .command("login")
     .description("Login in NEAR Wallet")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-    .action(login);
+    .action(login);*/
 
   program
     .command("create <name> <council>")

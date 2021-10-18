@@ -21,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "bn.js": "^5.2.0",
+    "chalk": "^4.1.2",
     "commander": "^7.2.0",
     "ncp": "^2.0.0",
     "near-api-js": "^0.42.0",
