@@ -15,7 +15,7 @@ const qs = require('querystring');
 const chalk = require('chalk');  // colorize output
 const open = require('open');    // open URL in default browser
 const { KeyPair, utils, transactions } = require('near-api-js');
-const verify = require('./utils/verify-account');
+//const verify = require('./utils/verify-account');
 const capture = require('./utils/capture-login-success');
 
 const eventtracking = require('./utils/eventtracking');
@@ -30,7 +30,7 @@ const openUrl = async function(url:any) {
 };
 
 export async function login(options: Record<string, any>): Promise<void> {
-
+/*
   const newUrl = new URL(options.walletUrl + '/login/');
   const title = 'NEAR CLI';
   newUrl.searchParams.set('title', title);
@@ -116,7 +116,7 @@ export async function login(options: Record<string, any>): Promise<void> {
   } catch (error:any) {
       await eventtracking.track(eventtracking.EVENT_ID_LOGIN_END, { success: false, error }, options);
       console.error('Failed to verify accountId.', error.message);
-  } 
+  } */
 }
 export async function daoCreate(dao_name: string, council: string, options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
