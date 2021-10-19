@@ -4,7 +4,7 @@ import { program } from "commander";
 
 import * as near from "near-api-lite/lib/near-rpc.js";
 import { getTokenBalance, stakingContract, getStakingContract } from "./commands/staking-contract";
-import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals,  daoRemoveBlob, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, } from "./commands/dao.js";
+import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals,  daoRemoveBlob, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, login, } from "./commands/dao.js";
 import { daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoProposePolicy, daoProposeTokenFarm, daoProposePoll } from "./commands/proposals.js";
 import { daoGetDaoList, factoryDeployCode } from "./commands/factory.js";
 import {daoAddBounty, daoGetBounties,daoBountyClaim, daoBountyGiveup, daoBountyDone} from "./commands/bounties.js";
@@ -15,17 +15,23 @@ async function main(argv: string[], _env: Record<string, unknown>) {
 
   near.setLogLevel(1);
 
+  /*program
+    .command("login")
+    .description("Login in NEAR Wallet")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(login);*/
+
   program
-  .command("create <name> <council>")
-  .description("Create a new Sputnik V2 DAO")
-  .option("--policy <policy>", "Asign a policy")
-  .option("--bond <bond>", "Asign bond","1000000000000000000000000")
-  .option("--metadata <meta>", "Asign metadata","")
-  .option("--accountId <accountId>", "Use account as signer")
-  .option("--factory <factory>", "Factory deployed")
-  .option("--purpose <purpose>", "Give a purpose to DAO","Sputnik V2 DAO")
-  .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-  .action(daoCreate);
+    .command("create <name> <council>")
+    .description("Create a new Sputnik V2 DAO")
+    .option("--policy <policy>", "Asign a policy")
+    .option("--bond <bond>", "Asign bond","1000000000000000000000000")
+    .option("--metadata <meta>", "Asign metadata","")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("--purpose <purpose>", "Give a purpose to DAO","Sputnik V2 DAO")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(daoCreate);
 
   program
     .command("info")
@@ -90,16 +96,6 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     */
 
   program
-    .command("get_bounties")
-    .description("get a list of bounties")
-    .option("--id <id>", "Id to get a specific bounty")
-    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
-    .option("-a, --accountId <accountId>", "use account as signer")
-    .option("--factory <factory>", "Factory deployed")
-    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-    .action(daoGetBounties);
-
-  program
     .command("bounty_claim <idbounty>")
     .description("claim a bounty")
     .option("--deadline <deadline>", "This is equivalent time in days, 1000 is 7 days")
@@ -124,13 +120,6 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("-a, --accountId <accountId>", "use account as signer")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(factoryDeployCode);
-
-  program
-    .command("get_dao_list <factAcc>")
-    .description("get a list of daos from a factory")
-    .option("-a, --accountId <accountId>", "use account as signer")
-    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
-    .action(daoGetDaoList);
 
 
   const dao_propose = program.command("proposal");
@@ -282,6 +271,24 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--factory <factory>", "Factory deployed")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(daoListProposals);
+
+
+  dao_list
+    .command("bounties")
+    .description("get a list of bounties")
+    .option("--id <id>", "Id to get a specific bounty")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("-a, --accountId <accountId>", "use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(daoGetBounties);
+
+  dao_list
+    .command("daos <factAcc>")
+    .description("get a list of daos from a factory")
+    .option("-a, --accountId <accountId>", "use account as signer")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(daoGetDaoList);
 
   dao_list
     .command("hash <wasmFile>")
