@@ -58,8 +58,10 @@ export function getCredentials(accountId: string): Credentials {
 //--------------------------
 export function newGetCredentials(accountId: string,network: string): Credentials {
   const homedir = os.homedir();
-  //console.log(network);
-  const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/"+network+"/" + accountId + ".json");
+  //NEAR CLI sends testnet credentials to /default folder.
+  console.log(network)
+  const network_dir = (network=="testnet") ? "default" : network;
+  const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/"+network_dir+"/" + accountId + ".json");
   const credentialsString = fs.readFileSync(CREDENTIALS_FILE).toString();
   const result: Credentials = JSON.parse(credentialsString);
   if (!result.private_key) {
@@ -80,14 +82,14 @@ export function getFactorySC(factory: string=SPUTNIK_FACTORY_TESTNET, network:st
   return factorySC;
 }
 
-//------------------------------------
+//-----This function will be replaced for multiConfigSigner
 export function configSigner(contract: SmartContract, signerAccountId: string): void {
   //config contract proxy credentials
   const credentials = getCredentials(signerAccountId);
   contract.signer = signerAccountId;
   contract.signer_private_key = credentials.private_key;
 }
-//------------------------------------
+//-----This functions allows to uses multiples networks with signer
 export function multiConfigSigner(contract: SmartContract, signerAccountId: string, network: string): void {
   //config contract proxy credentials
   const credentials = newGetCredentials(signerAccountId,network);
@@ -95,16 +97,22 @@ export function multiConfigSigner(contract: SmartContract, signerAccountId: stri
   contract.signer_private_key = credentials.private_key;
 }
 //------------------------------------
-export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet", factory: string =SPUTNIK_FACTORY_TESTNET, network:string="testnet"): SmartContract {
+export function getDaoContract(DaoId: string="", SignerId: string="", factory: string =SPUTNIK_FACTORY_TESTNET, network:string="testnet"): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
-  let dao_acc:string
+  if (DaoId=="") {
+    console.error("Error: A TARGET DAO ACCOUNT IS REQUIRED, ADD IT USING --daoAcc <dao_name> ");
+  }
+  if (SignerId=="") {
+    console.error("Error: A SIGNER ACCOUNT ID IS REQUIRED, ADD IT USING --accountId <near_id> ");
+  }  
+  let dao_acc:string;
   if(factory != null){
     dao_acc = (network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+factory;
   }else{
     dao_acc = (network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+SPUTNIK_FACTORY_TESTNET;
   }
   const dao = new SmartContract(dao_acc);
-  configSigner(dao, SignerId);
+  multiConfigSigner(dao, SignerId,network);
   return dao;
 }
 
