@@ -95,9 +95,15 @@ export function multiConfigSigner(contract: SmartContract, signerAccountId: stri
   contract.signer_private_key = credentials.private_key;
 }
 //------------------------------------
-export function getDaoContract(DaoId: string="fakedao", SignerId: string="alanfake.testnet", factory: string =SPUTNIK_FACTORY_TESTNET, network:string="testnet"): SmartContract {
+export function getDaoContract(DaoId: string="", SignerId: string="", factory: string =SPUTNIK_FACTORY_TESTNET, network:string="testnet"): SmartContract {
   //const dao = new SmartContract("metapool.sputnik2.testnet");
-  let dao_acc:string
+  if (DaoId=="") {
+    console.error("Error: A TARGET DAO ACCOUNT IS REQUIRED, ADD IT USING --daoAcc <dao_name> ");
+  }
+  if (SignerId=="") {
+    console.error("Error: A SIGNER ACCOUNT ID IS REQUIRED, ADD IT USING --accountId <near_id> ");
+  }  
+  let dao_acc:string;
   if(factory != null){
     dao_acc = (network=="mainnet") ? DaoId+"."+SPUTNIK_FACTORY_MAINNET: DaoId+"."+factory;
   }else{

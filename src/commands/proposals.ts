@@ -114,11 +114,11 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
 
 export async function daoProposePayout(amount: number, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
-
-    console.log(ONE_TENTH_OF_NEAR.toString());
     let dao_account = options.daoAcc;
-    //const dao = getDaoContract(dao_account,options.accountId);
+    
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
+    
+    console.log(ONE_TENTH_OF_NEAR.toString());
     let yocto_amount = ntoy(amount);
     //Propose a parget
     const target_id = (options.target!=undefined) ? options.target : options.accountId;
