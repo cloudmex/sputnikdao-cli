@@ -47,12 +47,10 @@ export async function stakingContract(token_id: string, options: Record<string, 
   
   //Generate a new proposal in DAO for 
   //adopting new staking contract
-  //const dao = getDaoContract(options.daoAcc, options.accountId);
   const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   
   const addProposalCall = await dao.call("add_proposal", {
     proposal: {
-      //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
       description: "Adopt staking contract",
       kind: {
         SetStakingContract: {
@@ -84,7 +82,6 @@ export async function getTokenBalance(token_id: string,options: Record<string, a
 export async function getStakingContract(options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
 
-  //const dao = getDaoContract(options.daoAcc, options.accountId);
   const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
 
   const result = await dao.view("get_staking_contract");

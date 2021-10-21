@@ -10,7 +10,6 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
     network.setCurrent(options.network);
     const wasmInfo = getBlobHash(wasmFile);
   
-    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   
     if (!options.skip) {
@@ -44,7 +43,6 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
     
     const wasmInfo = getBlobHash(SPUTNIK_WASM_PATH);
   
-    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     if (!options.skip) {
       //store the blob
@@ -53,7 +51,7 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
         wasmInfo.bytes, 
         200, 
         ntoy(wasmInfo.requiredStorageNears));
-      //console.log(inspect(resultHash, false, 5, true));
+        
       //save hash result
       appendFileSync("./blobs.json", JSON.stringify({ 
         wasmFile: SPUTNIK_WASM_PATH, 
@@ -80,7 +78,6 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
   export async function daoProposePoll(question: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     
-    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   
     const addProposalResult = await dao.call("add_proposal", {
@@ -159,7 +156,6 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     const token_args_base_64 = encodeBase64(decodeUTF8(JSON.stringify(token_args)));
     const token_factory=(options.network=="mainnet") ? TOKEN_FACTORY_MAINNET: TOKEN_FACTORY_TESTNET;
     
-    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     const addProposalCall = await dao.call("add_proposal", {
       proposal: {
@@ -186,7 +182,6 @@ export async function daoProposePayout(amount: number, options: Record<string, a
   export async function daoProposeCouncil(council: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
   
-    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     //In case that remove option was called
     let addProposalCall;
@@ -220,11 +215,11 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     console.log(inspect(addProposalCall, false, 5, true));
   
   }
+  
   export async function daoProposeCall(targetId: string, methodCall: string, argsCall: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
   
     let dao_account = options.daoAcc;
-    //const dao = getDaoContract(options.daoAcc, options.accountId);
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
   
     console.log(methodCall);
@@ -249,7 +244,6 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     network.setCurrent(options.network);
     
     const new_policy: JSON = JSON.parse(fs.readFileSync(policyFile, 'utf8'));
-    //const dao = getDaoContract(options.daoAcc, options.accountId,options.network);
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     console.log(new_policy);
     const addProposalCall = await dao.call("add_proposal", {
