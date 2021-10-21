@@ -1,7 +1,7 @@
 import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58, yton } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, getFactorySC, multiConfigSigner, getDaoContract,getSmartContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET } from "../util/setup";
+import { configSigner, getFactorySC, multiConfigSigner, getDaoContract,getSmartContract, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import * as network from "near-api-lite/lib/network.js";
@@ -107,11 +107,7 @@ export async function login(options: Record<string, any>): Promise<void> {
 }
 export async function daoCreate(dao_name: string, council: string, options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
-  const policy = {
-    "policy": [
-      "alan1.testnet"
-    ]
-  }
+
   const dao_params = {
     "config": {
       "name": dao_name, "purpose": options.purpose, "bond": options.bond, "metadata": ""
@@ -283,7 +279,6 @@ export async function daoVoteApprove(id: string, options: Record<string, any>): 
     throw Error(`invalid number: ${id} => ${proposalId}`);
   }
 
-  //near call $SPUTNIK_ID act_proposal '{"id": 0, "action": "VoteApprove"}' --accountId testmewell.testnet
   const result = await dao.call("act_proposal", { id: proposalId, action: "VoteApprove" });
 
   console.log(inspect(result || "success", false, 5, true));
@@ -305,7 +300,6 @@ export async function daoVoteUnapprove(id: string, options: Record<string, any>)
     throw Error(`invalid number: ${id} => ${proposalId}`);
   }
 
-  //near call $SPUTNIK_ID act_proposal '{"id": 0, "action": "VoteApprove"}' --accountId testmewell.testnet
   const result = await dao.call("act_proposal", { id: proposalId, action: "VoteReject" });
 
   console.log(inspect(result || "success", false, 5, true));
@@ -326,7 +320,6 @@ export async function daoVoteRemove(id: string, options: Record<string, any>): P
     throw Error(`invalid number: ${id} => ${proposalId}`);
   }
 
-  //near call $SPUTNIK_ID act_proposal '{"id": 0, "action": "VoteApprove"}' --accountId testmewell.testnet
   const result = await dao.call("act_proposal", { id: proposalId, action: "VoteRemove" });
 
   console.log(inspect(result || "success", false, 5, true));

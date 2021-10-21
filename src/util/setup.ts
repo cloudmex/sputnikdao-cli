@@ -15,9 +15,6 @@ export const TOKEN_FACTORY_MAINNET="undefined_cli.near"
 export const TOKEN_FACTORY_TESTNET="tokenfactory.testnet"
 //export const SPUTNIK_WASM_PATH:string = "res/sputnikdao2_bugged.wasm";
 export const SPUTNIK_WASM_PATH:string = "res/sputnikdao2-2021-09-28.wasm";
-export const METAPOOL_CONTRACT_ACCOUNT = prodMode ? "contract3.preprod-pool.near" : "contract3.preprod-pool.testnet";
-export const OPERATOR_ACCOUNT = prodMode ? "alantests.near" : "operator.preprod-pool." + NETWORK_ID;
-export const OWNER_ACCOUNT = "alan1." + NETWORK_ID;
 //For min bond
 export const ONE_TENTH_OF_NEAR = ONE_NEAR;
 export const TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT = "contract3.preprod-pool.testnet";
@@ -70,9 +67,8 @@ export function newGetCredentials(accountId: string,network: string): Credential
   return result;
 }
 
-//------------------------------------
+//--------- Looks for DAO factory
 export function getFactorySC(factory: string=SPUTNIK_FACTORY_TESTNET, network:string="testnet"): string {
-  //const dao = new SmartContract("metapool.sputnik2.testnet");
   let factorySC: string;
   if(factory != null){
     factorySC = (network=="mainnet") ? SPUTNIK_FACTORY_MAINNET: factory;

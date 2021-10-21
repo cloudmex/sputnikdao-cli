@@ -49,7 +49,7 @@ export async function stakingContract(token_id: string, options: Record<string, 
   //adopting new staking contract
   //const dao = getDaoContract(options.daoAcc, options.accountId);
   const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
-  // '{"proposal": {"description": "Adopt nALAN token for voting", "kind": {"SetStakingContract": {"staking_id": "alan2-staking.generic.testnet"}}}}'
+  
   const addProposalCall = await dao.call("add_proposal", {
     proposal: {
       //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
@@ -75,7 +75,6 @@ export async function getTokenBalance(token_id: string,options: Record<string, a
 
   const result = await dao.view("ft_balance_of",{
     account_id:options.daoAcc+".sputnikv2.testnet"
-    //account_id:"alan1.testnet"
   });
 
   console.log(inspect(result, false, 5, true));

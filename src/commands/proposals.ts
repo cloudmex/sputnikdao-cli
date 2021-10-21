@@ -1,7 +1,7 @@
 import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58, yton } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, multiConfigSigner, getDaoContract,getSmartContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET, ONE_TENTH_OF_NEAR } from "../util/setup";
+import { configSigner, multiConfigSigner, getDaoContract,getSmartContract, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET, ONE_TENTH_OF_NEAR } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import * as network from "near-api-lite/lib/network.js";
@@ -74,24 +74,7 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
     }, 200, ONE_TENTH_OF_NEAR.toString());
   
     console.log(inspect(addProposalResult, false, 5, true));
-    /*
-    let dao_acc:string=options.daoAcc+".sputnikv2.testnet";
-    const addProposalResult = await dao.call("add_proposal", {
-      proposal: {
-        target: dao_acc,
-        description: "upgrade code",
-        kind: {
-          UpgradeRemote: {
-            receiver_id: dao_acc,
-            method_name: "upgrade_self",
-            hash: encodeBase58(wasmInfo.hash),
-          }
-        }
-      }
-    }, 200, ONE_TENTH_OF_NEAR.toString());
-    console.log(inspect(addProposalResult, false, 5, true));
-  */
-  
+    
   }
   
   export async function daoProposePoll(question: string, options: Record<string, any>): Promise<void> {
@@ -136,7 +119,6 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     //Do a proposal for payout of tokens
     const addProposalCall = await dao.call("add_proposal", {
       proposal: {
-        //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
         description: "propose a payout",
         kind: {
           Transfer: {
@@ -181,7 +163,6 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
     const addProposalCall = await dao.call("add_proposal", {
       proposal: {
-        //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
         description: "Farming " + token_amount + " units of a new token: " + token_name +" to "+owner_id,
         kind: {
           FunctionCall: {
@@ -251,7 +232,6 @@ export async function daoProposePayout(amount: number, options: Record<string, a
   
     const addProposalCall = await dao.call("add_proposal", {
       proposal: {
-        //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
         description: "propose a calling a method to target contract",
         kind: {
           FunctionCall: {
@@ -274,7 +254,6 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     console.log(new_policy);
     const addProposalCall = await dao.call("add_proposal", {
       proposal: {
-        //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
         description: "Propose an upgrade of policy",
         kind: {
           ChangePolicy: {
