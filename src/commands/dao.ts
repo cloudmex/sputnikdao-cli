@@ -190,7 +190,7 @@ export async function daoListProposals(options: Record<string, any>): Promise<vo
   network.setCurrent(options.network);
   const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
 
-  const result = await dao.view("get_proposals", { from_index: 0, limit: 50 });
+  const result = await dao.view("get_proposals", { from_index: Number(options.from), limit: Number(options.to) });
 
   console.log(inspect(result, false, 5, true));
 
