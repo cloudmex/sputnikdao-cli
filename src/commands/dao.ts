@@ -168,8 +168,15 @@ export async function daoInfo(options: Record<string, any>): Promise<void> {
 }
 
 export async function daoUI(options: Record<string, any>): Promise<void> {
-  require("openurl").open("https://testnet-v2.sputnik.fund/")
-  //window.open("https://testnet-v2.sputnik.fund/", "_blank");
+  let url:string="https://testnet-v2.sputnik.fund/";
+
+  if (options.network=="mainnet") {
+    url="https://v2.sputnik.fund/"
+  }
+  if (options.astro!=undefined) {
+    url="https://app.astrodao.com/"
+  }
+  require("openurl").open(url);
 
 }
 
