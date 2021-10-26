@@ -1,7 +1,7 @@
 import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { getDaoContract, getFactoryContract, getRandomInt, getSmartContract, TOKEN_FACTORY_TESTNET } from "../util/setup";
+import { getDaoContract, getFactoryContract, getRandomInt, getSmartContract, TOKEN_FACTORY_TESTNET, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import { option } from "commander";
@@ -25,10 +25,20 @@ export async function stakingContract(token_id: string, options: Record<string, 
 
   //Initialize staking contract
   const staking_contract = getSmartContract(contract_name+".generic.testnet", options.accountId);
+  let dao_acc:string;
+  if(options.factory != null){
+    //dao_acc = (options.network=="mainnet") ? options.daoAcc+"."+SPUTNIK_FACTORY_MAINNET: options.daoAcc+"."+options.factory;
+    dao_acc = options.daoAcc+"."+options.factory;
+  }else{
+    dao_acc = (options.network=="mainnet") ? options.daoAcc+"."+SPUTNIK_FACTORY_MAINNET: options.daoAcc+"."+SPUTNIK_FACTORY_TESTNET;
+  }
+  //Is required to have mainnet option in here
+  //token_id=token_id+"."+TOKEN_FACTORY_TESTNET
+  
   
   const initStakingCall = await staking_contract.call("new", {
     token_id,
-    owner_id: options.daoAcc,
+    owner_id: dao_acc,
     unstake_period: "604800000000000"
   }, 200);
 

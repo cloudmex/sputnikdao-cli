@@ -101,13 +101,14 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     //console.log(ONE_TENTH_OF_NEAR.toString());
     let yocto_amount = ntoy(amount);
     //Propose a parget
-    const target_id = (options.target!=undefined) ? options.target : options.accountId;
-    const token_id = (options.token!=undefined) ?  "" : options.token + "." + TOKEN_FACTORY_TESTNET ;
+    const target_id = (options.target!=null) ? options.target : options.accountId;
+    const token_id = (options.token=="") ?  "" : options.token + "." + TOKEN_FACTORY_TESTNET ;
+    
     //Compare if the token is not $NEAR (default)
     if(options.token!=""){
       const token_contract = getSmartContract(token_id,options.accountId);
       const storageCall = await token_contract.call("storage_deposit", {
-        account_id: target_id,
+        //account_id: target_id,
       }, 100, ONE_NEAR.toString());
     
       console.log(inspect(storageCall, false, 5, true));
@@ -120,7 +121,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
         kind: {
           Transfer: {
             receiver_id: target_id,
-            token_id:token_id, //default for basic $NEAR
+            token_id, //default for basic $NEAR
             amount: yocto_amount,
           }
         }
