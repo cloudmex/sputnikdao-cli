@@ -45,8 +45,8 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   program
     .command("openui")
     .description("Open UI website of Sputnik DAO v2")
-    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .option("--astro", "Pick a network: testnet/mainnet","testnet")
     .action(daoUI);
 
   program
@@ -266,6 +266,8 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   dao_list
     .command("proposals")
     .description("list proposals")
+    .option("--from <from>", "use account as signer","0")
+    .option("--to <to>", "use account as signer","50")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-a, --accountId <accountId>", "use account as signer")
     .option("--factory <factory>", "Factory deployed")
