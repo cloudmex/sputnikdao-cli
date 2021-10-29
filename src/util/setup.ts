@@ -55,7 +55,7 @@ export function newGetCredentials(accountId: string,network: string): Credential
   const homedir = os.homedir();
   //NEAR CLI sends testnet credentials to /default folder.
   //console.log(network)
-  const network_dir = (network=="testnet") ? "default" : network;
+  const network_dir = (network=="testnet") ? "testnet" : network;
   const CREDENTIALS_FILE = path.join(homedir, ".near-credentials/"+network_dir+"/" + accountId + ".json");
   const credentialsString = fs.readFileSync(CREDENTIALS_FILE).toString();
   const result: Credentials = JSON.parse(credentialsString);
