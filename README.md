@@ -43,6 +43,7 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
     - [Get DAO info](#get-dao-info)
     - [Switching network](#switching-network)
   - [Credits](#credits)
+- [About Token Weighted Policy](#about-token-weighted-policy)
 
 ## Post in Governance Forum
 You can follow the discussion and add your own ideas and colaboration in [the post at NEAR Gov Forum](https://gov.near.org/t/project-sputnikdao-tools-for-managing-sputnik-dao-v2-at-terminal/4726)
@@ -904,3 +905,145 @@ She now is deploying DAO functionalities to mainnet.
 
 basic structure based in meta-pool-utils by Narwallets.
 
+# About Token Weighted Policy
+
+Still under testing:
+
+```bash
+//Nombre del DAO
+DAO_ACC=daohank
+
+// Nombre del token
+TOKEN_NAME=joetoken
+
+// Simbolo del token
+TOKEN_SYM=joe
+
+// Cantidad de tokens a ser farmeados
+TOKEN_AMOUNT=1000
+
+// Miembro del consejo
+COUNCIL_ACC=joehank.testnet
+
+// Nombre de la cuenta que hará las llamadas
+SIGNER_ACC=joehank.testnet
+
+// Se crea una nueva DAO con su consejo
+sputnikdao create $DAO_ACC $COUNCIL_ACC --accountId $SIGNER_ACC
+
+//Se crea un proposal para farmear un nuevo token y se aprueba
+//Los tokens los recibe la DAO
+sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+sputnikdao vote approve 0 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+// Se ve la cantidad de tokens
+sputnikdao token-balance $TOKEN_SYM --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+sputnikdao staking-contract joe.tokenfactory.testnet --daoAcc $DAO_ACC --accountId $SIGNER_ACC --key 8gzjvfJBxrHiUKiuhUebuC6X9HdmRt3PBMvJ2ChSXdTD
+
+sputnikdao vote approve 1 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+sputnikdao get-staking --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+STAKING_ACC=staking-682633629.generic.testnet
+
+sputnikdao proposal payout 600 --daoAcc $DAO_ACC --accountId $SIGNER_ACC --token $TOKEN_SYM
+
+sputnikdao vote approve 2 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//IMPORTANTE: Dejar el espacio en blanco cuando se quiere registrar el Signer_Acc
+//Los parámetros deben de quedar vacíos cuando se autoregistra
+//Storage deposit es basicamente registrar una cuenta en el staking
+near call staking-682633629.generic.testnet storage_deposit '' --accountId $SIGNER_ACC --amount 1
+
+near view $STAKING_ACC get_user '{"account_id":"joehank.testnet"}'
+
+near call staking-682633629.generic.testnet storage_deposit '{"account_id":"staking-682633629.generic.testnet"}' --accountId $SIGNER_ACC --amount 1
+
+near view $STAKING_ACC get_user '{"account_id":"staking-682633629.generic.testnet"}'
+
+near call joe.tokenfactory.testnet storage_deposit '{"account_id":"staking-682633629.generic.testnet"}' --accountId $SIGNER_ACC --amount 1
+
+near call joe.tokenfactory.testnet ft_transfer_call '{"receiver_id":"staking-682633629.generic.testnet", "amount":"200000000000000000000","msg":""}' --accountId joehank.testnet --amount 0.000000000000000000000001 --gas 200000000000000
+
+near view staking-682633629.generic.testnet ft_total_supply
+
+near view $DAO_ACC.sputnikv2.testnet delegation_total_supply '' (response:0)
+
+near call $STAKING_ACC delegate '{"account_id":"joehank.testnet", "amount": "100000000000000000000"}' --accountId $SIGNER_ACC
+
+near view $DAO_ACC.sputnikv2.testnet delegation_total_supply '' (response:100000000000000000000)
+
+//IMPORTANTE: Dejar el espacio en blanco cuando se quiere registrar el Signer_Acc
+//Los parámetros deben de quedar vacíos cuando se autoregistra
+//Storage deposit es basicamente registrar una cuenta en el staking
+near call staking-682633629.generic.testnet storage_deposit '' --accountId ejemplo.testnet --amount 1
+
+//Verificar que tenga los tokens y esté registrado
+near view $STAKING_ACC get_user '{"account_id":"ejemplo.testnet"}'
+
+//Transferir desde la wallet los tokens farmeados antes de hacer el transfer call
+near call joe.tokenfactory.testnet ft_transfer_call '{"receiver_id":"staking-682633629.generic.testnet", "amount":"300000000000000000000","msg":""}' --accountId ejemplo.testnet --amount 0.000000000000000000000001 --gas 200000000000000
+
+//Confirmar que los tokens estén en la cuenta
+near view $STAKING_ACC get_user '{"account_id":"ejemplo.testnet"}'
+
+//Delegar los tokens a tu misma cuenta o a otra cuenta
+near call $STAKING_ACC delegate '{"account_id":"ejemplo.testnet", "amount": "300000000000000000000"}' --accountId ejemplo.testnet
+
+//Confirmar que los tokens han sido delegados
+near view $STAKING_ACC get_user '{"account_id":"ejemplo.testnet"}'
+
+//Comando para corrección de bug en las Daos que no permitía votación por tokens, actualiza la Dao
+sputnikdao proposal self-upgrade --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Se vota para aprobar el proposal
+sputnikdao vote approve 3 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Comando para corregir los errores de la política de votación por tokens, actualiza la politica
+sputnikdao proposal policy token_policy.json --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Se vota para aprobar el proposal
+sputnikdao vote approve 4 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+
+
+//Treshold es la variable que cuando se cumple el total, se puede aprobar la votación con los tokens, es decir que 400 tokens voten en total por una opción y ese sea el máximo
+//Cuando pusimos la cantidad total de tokens en el treshold funcionó
+
+sputnikdao proposal poll "Are we token weighted?" --daoAcc $DAO_ACC --accountId joehank.testnet
+
+sputnikdao vote unapprove 10 --daoAcc $DAO_ACC --accountId ejemplo.testnet
+
+sputnikdao list proposals --daoAcc $DAO_ACC --accountId joehank.testnet
+
+Result:
+{
+    id: 10,
+    proposer: 'joehank.testnet',
+    description: 'Are we token weighted?',
+    kind: 'Vote',
+    status: 'InProgress',
+    vote_counts: { council: [ 0, 300000000000000000000, 0 ] },
+    votes: { 'ejemplo.testnet': 'Reject' },
+    submission_time: '1635546275079143986'
+  }
+
+sputnikdao vote unapprove 10 --daoAcc $DAO_ACC --accountId joehank.testnet
+
+sputnikdao list proposals --daoAcc $DAO_ACC --accountId joehank.testnet
+
+Result:
+{
+    id: 10,
+    proposer: 'joehank.testnet',
+    description: 'Are we token weighted?',
+    kind: 'Vote',
+    status: 'Rejected',
+    vote_counts: { council: [ 0, 400000000000000000000, 0 ] },
+    votes: { 'joehank.testnet': 'Reject', 'ejemplo.testnet': 'Reject' },
+    submission_time: '1635546275079143986'
+  }
+
+```

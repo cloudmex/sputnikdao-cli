@@ -3,7 +3,7 @@
 import { program } from "commander";
 
 import * as near from "near-api-lite/lib/near-rpc.js";
-import { getTokenBalance, stakingContract, getStakingContract } from "./commands/staking-contract";
+import { getTokenBalance, stakingContract, getStakingContract, setStorageStaking, setStorageFt, getStakingBalance } from "./commands/staking-contract";
 import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals,  daoRemoveBlob, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, login, } from "./commands/dao.js";
 import { daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoProposePolicy, daoProposeTokenFarm, daoProposePoll } from "./commands/proposals.js";
 import { daoGetDaoList, factoryDeployCode } from "./commands/factory.js";
@@ -79,6 +79,37 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--factory <factory>", "Factory deployed")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(getStakingContract);
+    //Recovers staking contract
+  program
+    .command("get-staking-balance")
+    .description("Get staking balance of an account")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--target <target>", "Changes target for creating storage-staking")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(getStakingBalance);
+
+  program
+    .command("storage-staking")
+    .description("Create an storage deposit for staking contract")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--target <target>", "Changes target for creating storage-staking")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(setStorageStaking);
+
+  program
+    .command("storage-ft <token_id>")
+    .description("Create an storage deposit for fungible token contract")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--target <target>", "Changes target for creating storage-staking")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(setStorageFt);
+
   program
     .command("token-balance <token_id>")
     .description("Shows token balance of DAO")

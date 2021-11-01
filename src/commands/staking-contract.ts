@@ -88,7 +88,44 @@ export async function getTokenBalance(token_id: string,options: Record<string, a
   console.log(inspect(result, false, 5, true));
 
 }
-//Get DAO token balance
+//call storage_deposit of staking contract
+export async function setStorageStaking(options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
+
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
+
+  const result = await dao.view("get_staking_contract");
+  const staking_contract = getSmartContract(result, options.accountId);
+
+  const stake_results = await staking_contract.call("storage_deposit",{
+
+  },undefined,ONE_NEAR.toString());
+
+
+  console.log(inspect(stake_results, false, 5, true));
+  console.log("Storage created succesfully");
+
+}
+
+//call storage_deposit of token contract
+export async function setStorageFt(token_id:string,options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
+
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
+
+  const staking_contract = getSmartContract(token_id, options.accountId);
+
+  const stake_results = await staking_contract.call("storage_deposit",{
+
+  },undefined,ONE_NEAR.toString());
+
+
+  console.log(inspect(stake_results, false, 5, true));
+  console.log("Storage created succesfully");
+
+}
+
+//Get attached staking contract
 export async function getStakingContract(options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
 
@@ -97,6 +134,23 @@ export async function getStakingContract(options: Record<string, any>): Promise<
   const result = await dao.view("get_staking_contract");
 
   console.log(inspect(result, false, 5, true));
+
+}
+//Get staking balance of an account in attached staking contract
+export async function getStakingBalance(options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
+
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
+
+  const result = await dao.view("get_staking_contract");
+  const staking_contract = getSmartContract(result, options.accountId);
+
+  const stake_results = await staking_contract.view("get_user",{
+    account_id:options.accountId
+  });
+
+
+  console.log(inspect(stake_results, false, 5, true));
 
 }
 /*
