@@ -1,4 +1,4 @@
-import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
+import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58, ytonFull } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
 import { getDaoContract, getFactoryContract, getRandomInt, getSmartContract, TOKEN_FACTORY_TESTNET, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET } from "../util/setup";
@@ -137,6 +137,17 @@ export async function getStakingContract(options: Record<string, any>): Promise<
   console.log(inspect(result, false, 5, true));
 
 }
+//Recovers attached total delegation supply
+export async function getTotalDelegationSupply(options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
+
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
+
+  const result = await dao.view("delegation_total_supply");
+
+  console.log(inspect(result, false, 5, true));
+
+}
 
 //Get staking balance of an account in attached staking contract
 export async function getStakingBalance(options: Record<string, any>): Promise<void> {
@@ -160,16 +171,39 @@ export async function getStakingBalance(options: Record<string, any>): Promise<v
 export async function setFTTransferCall(token_id:string,amount:number,options: Record<string, any>): Promise<void> {
   network.setCurrent(options.network);
 
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
+
+  const staking_contract = await dao.view("get_staking_contract");
   const token_contract = getSmartContract(token_id, options.accountId);
   const token_amount = ntoy(amount/1000000);
   const stake_results = await token_contract.call("ft_transfer_call",{
-    receiver_id:options.target,
+    receiver_id:staking_contract,
     amount: token_amount,
     //The message needs to be empty, in other case the contract panics
     msg:"",
-  },undefined,ONE_NEAR.toString());
+  },undefined,"1");
 
 
   console.log(inspect(stake_results, false, 5, true));
+
+}
+
+
+//Delegate tokens for voting power
+export async function setFTDelegation(target_id:string,amount:number,options: Record<string, any>): Promise<void> {
+  network.setCurrent(options.network);
+
+  const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
+
+  const staking_id = await dao.view("get_staking_contract");
+  const staking_contract = getSmartContract(staking_id, options.accountId);
+  const token_amount = ntoy(amount/1000000);
+  const delegate_results = await staking_contract.call("delegate",{
+    account_id: target_id,
+    amount: token_amount,
+  },undefined);
+
+
+  console.log(inspect(delegate_results, false, 5, true));
 
 }

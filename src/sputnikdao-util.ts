@@ -3,7 +3,7 @@
 import { program } from "commander";
 
 import * as near from "near-api-lite/lib/near-rpc.js";
-import { getTokenBalance, stakingContract, getStakingContract, setStorageStaking, setStorageFt, getStakingBalance, setFTTransferCall } from "./commands/staking-contract";
+import { getTokenBalance, stakingContract, getStakingContract, setStorageStaking, setStorageFt, getStakingBalance, setFTTransferCall, setFTDelegation, getTotalDelegationSupply } from "./commands/staking-contract";
 import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals,  daoRemoveBlob, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, login, } from "./commands/dao.js";
 import { daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoProposePolicy, daoProposeTokenFarm, daoProposePoll } from "./commands/proposals.js";
 import { daoGetDaoList, factoryDeployCode } from "./commands/factory.js";
@@ -120,6 +120,23 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(setFTTransferCall);
 
+  program
+    .command("delegate-ft <target_id> <amount>")
+    .description("Create an storage deposit for fungible token contract")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(setFTDelegation);
+
+    program
+      .command("total-delegation-supply")
+      .description("Create an storage deposit for fungible token contract")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--accountId <accountId>", "Use account as signer")
+      .option("--factory <factory>", "Factory deployed")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+      .action(getTotalDelegationSupply);
   program
     .command("token-balance <token_id>")
     .description("Shows token balance of DAO")
