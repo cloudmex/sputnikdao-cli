@@ -112,7 +112,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
 
   program
     .command("transfer-ft <token_id> <amount>")
-    .description("Create an storage deposit for fungible token contract")
+    .description("Do a transfer call of FT tokens from token contract to staking contract")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("--target <target>", "target for account to pay")
     .option("--accountId <accountId>", "Use account as signer")
