@@ -998,7 +998,7 @@ sputnikdao vote unapprove 10 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
 
 sputnikdao list proposals --daoAcc $DAO_ACC --accountId $SIGNER_ACC
 
-// Pidemos repetir el proceso con otro signer
+// Podemos repetir el proceso con otro signer
 // al cual le podemos delegar otra cantidad de tokens
 // y hacer la prueba de votación con dos cuentas con tokens delegados
 sputnikdao vote approve 10 --daoAcc $DAO_ACC --accountId $SIGNER_ACC2
