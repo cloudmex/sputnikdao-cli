@@ -1,7 +1,7 @@
 import { SmartContract, ntoy, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner, multiConfigSigner, getSmartContract, getFactoryContract, getDaoContract, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET } from "../util/setup";
+import { configSigner, multiConfigSigner, getSmartContract, getFactoryContract, getDaoContract, SPUTNIK_WASM_PATH, SPUTNIK_FACTORY_MAINNET, SPUTNIK_FACTORY_TESTNET, TOKEN_FACTORY_MAINNET, TOKEN_FACTORY_TESTNET } from "../util/setup";
 import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import * as network from "near-api-lite/lib/network.js";

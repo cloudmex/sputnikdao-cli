@@ -1,7 +1,7 @@
 import { SmartContract, ntoy, yton, encodeBase64, decodeUTF8, ONE_NEAR, encodeBase58 } from "near-api-lite";
 import { readFileSync, appendFileSync } from "fs";
 import { inspect } from "util";
-import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT, ONE_TENTH_OF_NEAR } from "../util/setup";
+import { configSigner,multiConfigSigner, getDaoContract, getNetworkEnding, ONE_TENTH_OF_NEAR } from "../util/setup";
 import { option } from "commander";
 import * as network from "near-api-lite/lib/network.js";
 
@@ -17,7 +17,6 @@ export async function daoAddBounty( amount:number, options: Record<string, any>)
     console.log(yocto_amount);
     const addBountyCall = await dao.call("add_proposal", {
       proposal: {
-        //target: TARGET_REMOTE_UPGRADE_CONTRACT_ACCOUNT,
         description: "propose a bounty",
         kind: {
           AddBounty: {

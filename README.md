@@ -43,6 +43,7 @@ Sputnik DAO is one of the most powerful tools that NEAR ecosystem have. Version 
     - [Get DAO info](#get-dao-info)
     - [Switching network](#switching-network)
   - [Credits](#credits)
+- [About Token Weighted Policy](#about-token-weighted-policy)
 
 ## Post in Governance Forum
 You can follow the discussion and add your own ideas and colaboration in [the post at NEAR Gov Forum](https://gov.near.org/t/project-sputnikdao-tools-for-managing-sputnik-dao-v2-at-terminal/4726)
@@ -904,3 +905,103 @@ She now is deploying DAO functionalities to mainnet.
 
 basic structure based in meta-pool-utils by Narwallets.
 
+# About Token Weighted Policy
+
+Still under testing:
+
+```bash//Nombre del DAO
+//Nombre del DAO
+DAO_ACC=finaldao
+
+// Nombre del token
+TOKEN_NAME=finaltkn
+
+// Simbolo del token
+TOKEN_SYM=ftkn
+
+// Cantidad de tokens a ser farmeados
+TOKEN_AMOUNT=1000
+
+// Miembro del consejo
+COUNCIL_ACC=alan1.testnet
+
+// Nombre de la cuenta que hará las llamadas
+SIGNER_ACC=alan1.testnet
+
+// Se crea una nueva DAO con su consejo
+sputnikdao create $DAO_ACC $COUNCIL_ACC --accountId $SIGNER_ACC
+
+//Se crea un proposal para farmear un nuevo token y se aprueba
+//Los tokens los recibe la DAO
+sputnikdao proposal tokenfarm $TOKEN_NAME $TOKEN_SYM $TOKEN_AMOUNT --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+sputnikdao vote approve 0 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+// Se ve la cantidad de tokens
+sputnikdao token-balance $TOKEN_SYM --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+sputnikdao staking-contract $TOKEN_SYM.tokenfactory.testnet --daoAcc $DAO_ACC --accountId $SIGNER_ACC --key 8gzjvfJBxrHiUKiuhUebuC6X9HdmRt3PBMvJ2ChSXdTD
+
+sputnikdao vote approve 1 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+sputnikdao get-staking --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+STAKING_ACC=staking-276683170.generic.testnet
+
+sputnikdao proposal payout 600 --daoAcc $DAO_ACC --accountId $SIGNER_ACC --token $TOKEN_SYM
+
+sputnikdao vote approve 2 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//IMPORTANTE: Dejar el espacio en blanco cuando se quiere registrar el Signer_Acc
+//Los parámetros deben de quedar vacíos cuando se autoregistra
+//Storage deposit es basicamente registrar una cuenta en el staking
+
+sputnikdao storage-staking  --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+// Se crea espacio de almacenamiento en el contrato del token fungible
+sputnikdao storage-ft $TOKEN_SYM.tokenfactory.testnet --daoAcc $DAO_ACC --accountId $SIGNER_ACC --target $STAKING_ACC
+
+// Se transfieren 100 tokens fungibles de la cuenta del signer
+// a la cuenta del contrato de staking
+sputnikdao transfer-ft $TOKEN_SYM.tokenfactory.testnet 100 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+// Estando los tokens fungibles en el contrato de staking
+// Se delegan para tener peso de votación en la DAO
+sputnikdao delegate-ft $SIGNER_ACC 50 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+// Se obtiene el balance que tiene el signer en el contrato de staking
+// También nos retorna cuantos tokens han sido delegados
+sputnikdao get-staking-balance --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Mostramos el total de tokens delegados en la DAO
+sputnikdao total-delegation-supply --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Comando para corrección de bug en las Daos que no permitía votación por tokens, actualiza la Dao
+sputnikdao proposal self-upgrade --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Se vota para aprobar el proposal
+sputnikdao vote approve 3 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Comando para corregir los errores de la política de votación por tokens, actualiza la politica
+sputnikdao proposal policy token_policy.json --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Se vota para aprobar el proposal
+sputnikdao vote approve 4 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+//Treshold es la variable que cuando se cumple el total, se puede aprobar la votación con los tokens, es decir que 400 tokens voten en total por una opción y ese sea el máximo
+//Cuando pusimos la cantidad total de tokens en el treshold funcionó
+
+sputnikdao proposal poll "Are we token weighted?" --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+// Votamos con la cuenta que tiene tokens delegados
+sputnikdao vote unapprove 10 --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+sputnikdao list proposals --daoAcc $DAO_ACC --accountId $SIGNER_ACC
+
+// Podemos repetir el proceso con otro signer
+// al cual le podemos delegar otra cantidad de tokens
+// y hacer la prueba de votación con dos cuentas con tokens delegados
+sputnikdao vote approve 10 --daoAcc $DAO_ACC --accountId $SIGNER_ACC2
+
+sputnikdao list proposals --daoAcc $DAO_ACC --accountId $SIGNER_ACC2
+```

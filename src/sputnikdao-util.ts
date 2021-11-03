@@ -3,7 +3,7 @@
 import { program } from "commander";
 
 import * as near from "near-api-lite/lib/near-rpc.js";
-import { getTokenBalance, stakingContract, getStakingContract } from "./commands/staking-contract";
+import { getTokenBalance, stakingContract, getStakingContract, setStorageStaking, setStorageFt, getStakingBalance, setFTTransferCall, setFTDelegation, getTotalDelegationSupply } from "./commands/staking-contract";
 import { daoCreate, daoDeployCode, daoGetPolicy, daoInfo, daoUI, daoListHash, daoListProposals,  daoRemoveBlob, daoVoteApprove, daoVoteUnapprove, daoVoteRemove, login, } from "./commands/dao.js";
 import { daoProposePayout, daoProposeUpgrade, daoProposeSelfUpgrade, daoProposeCall,daoProposeCouncil, daoProposePolicy, daoProposeTokenFarm, daoProposePoll } from "./commands/proposals.js";
 import { daoGetDaoList, factoryDeployCode } from "./commands/factory.js";
@@ -45,8 +45,8 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   program
     .command("openui")
     .description("Open UI website of Sputnik DAO v2")
-    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .option("--astro", "Pick a network: testnet/mainnet","testnet")
     .action(daoUI);
 
   program
@@ -79,6 +79,64 @@ async function main(argv: string[], _env: Record<string, unknown>) {
     .option("--factory <factory>", "Factory deployed")
     .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
     .action(getStakingContract);
+    //Recovers staking contract
+  program
+    .command("get-staking-balance")
+    .description("Get staking balance of an account")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--target <target>", "Changes target for creating storage-staking")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(getStakingBalance);
+
+  program
+    .command("storage-staking")
+    .description("Create an storage deposit for staking contract")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--target <target>", "Changes target for creating storage-staking")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(setStorageStaking);
+
+  program
+    .command("storage-ft <token_id>")
+    .description("Create an storage deposit for fungible token contract")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--target <target>", "Changes target for creating storage-staking")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(setStorageFt);
+
+  program
+    .command("transfer-ft <token_id> <amount>")
+    .description("Do a transfer call of FT tokens from token contract to staking contract")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--target <target>", "target for account to pay")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(setFTTransferCall);
+
+  program
+    .command("delegate-ft <target_id> <amount>")
+    .description("Create an storage deposit for fungible token contract")
+    .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+    .option("--accountId <accountId>", "Use account as signer")
+    .option("--factory <factory>", "Factory deployed")
+    .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+    .action(setFTDelegation);
+
+    program
+      .command("total-delegation-supply")
+      .description("Create an storage deposit for fungible token contract")
+      .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--accountId <accountId>", "Use account as signer")
+      .option("--factory <factory>", "Factory deployed")
+      .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
+      .action(getTotalDelegationSupply);
   program
     .command("token-balance <token_id>")
     .description("Shows token balance of DAO")
@@ -266,6 +324,8 @@ async function main(argv: string[], _env: Record<string, unknown>) {
   dao_list
     .command("proposals")
     .description("list proposals")
+    .option("--from <from>", "use account as signer","0")
+    .option("--to <to>", "use account as signer","50")
     .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
     .option("-a, --accountId <accountId>", "use account as signer")
     .option("--factory <factory>", "Factory deployed")
