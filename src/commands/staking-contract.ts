@@ -115,9 +115,9 @@ export async function setStorageFt(token_id:string,options: Record<string, any>)
   const dao = getDaoContract(options.daoAcc,options.accountId,options.factory, options.network);
 
   const staking_contract = getSmartContract(token_id, options.accountId);
-
+  const account_id = (options.target==undefined) ? options.accountId :options.target;
   const stake_results = await staking_contract.call("storage_deposit",{
-
+    account_id
   },undefined,ONE_NEAR.toString());
 
 
