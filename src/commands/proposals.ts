@@ -6,7 +6,8 @@ import * as fs from 'fs';
 import * as sha256 from "near-api-lite/lib/utils/sha256.js";
 import * as network from "near-api-lite/lib/network.js";
 
-export async function daoProposeUpgrade(wasmFile: string, targetId:string, options: Record<string, any>): Promise<void> {
+//Propose the upgrade of a remote contract
+  export async function daoProposeUpgrade(wasmFile: string, targetId:string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     const wasmInfo = getBlobHash(wasmFile);
   
@@ -37,7 +38,9 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
     console.log(inspect(addProposalResult, false, 5, true));
   
   }
-  
+
+//Propose the upgrade of  DAO contract
+//Recovers the wasm file located at res/  
   export async function daoProposeSelfUpgrade(options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     
@@ -74,7 +77,10 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
     console.log(inspect(addProposalResult, false, 5, true));
     
   }
-  
+
+//Propose a poll inside DAO
+//I.E. "Is good to have a pool?"
+//DAO council can vote approve or unapprove
   export async function daoProposePoll(question: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     
@@ -91,7 +97,8 @@ export async function daoProposeUpgrade(wasmFile: string, targetId:string, optio
   
   }
 
-
+// Propose a payout
+//It can be a custom FT using --token <token_id>
 export async function daoProposePayout(amount: number, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     let dao_account = options.daoAcc;
@@ -131,7 +138,10 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     console.log(inspect(addProposalCall, false, 5, true));
   
   }
-  
+
+// Farms a new token
+//Payout is sended to DAO
+//You can set token name, symbol and amount
   export async function daoProposeTokenFarm(token_name: string,token_symbol: string, token_amount: number, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     if (options.daoAcc == null) {
@@ -180,6 +190,8 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     console.log(inspect(addProposalCall, false, 5, true));
   
   }
+
+//Propose to add a new council
   export async function daoProposeCouncil(council: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
   
@@ -217,6 +229,7 @@ export async function daoProposePayout(amount: number, options: Record<string, a
   
   }
   
+// Propose a remote call to target contract
   export async function daoProposeCall(targetId: string, methodCall: string, argsCall: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
   
@@ -241,6 +254,9 @@ export async function daoProposePayout(amount: number, options: Record<string, a
     console.log(inspect(addProposalCall, false, 5, true));
   
   }
+
+// Propose the upgrade of a policy
+// it is send as a JSON file
   export async function daoProposePolicy(policyFile: string, options: Record<string, any>): Promise<void> {
     network.setCurrent(options.network);
     
