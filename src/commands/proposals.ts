@@ -21,10 +21,17 @@ import * as network from "near-api-lite/lib/network.js";
       appendFileSync("./blobs.json", JSON.stringify({ wasmFile: wasmFile, base58Hash: resultBase58Hash }));
     }
   
+    let description: string;
+    if (options.description != null) {
+      description = options.description;
+    } else {
+      description = "Upgrade code";
+    }
+
     const addProposalResult = await dao.call("add_proposal", {
       proposal: {
         target: targetId,
-        description: "Upgrade code",
+        description: description,
         kind: {
           UpgradeRemote: {
             receiver_id: targetId,
