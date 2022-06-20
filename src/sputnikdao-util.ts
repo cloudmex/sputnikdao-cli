@@ -196,6 +196,7 @@ async function main(argv: string[], _env: Record<string, unknown>) {
       .command("upgrade <wasmFile> <targetId>")
       .description("Propose the upgrade of an external contract")
       .option("--daoAcc <daoAcc>", "NEAR ID of DAO Account that is receiving the proposal")
+      .option("--description <description>", "Description of the proposal")
       .option("-a, --accountId <accountId>", "Use account as signer (Who is requesting the payout)")
       .option("-k, --skip", "skip storing the code blob first (if you've already uploaded the code)")
       .option("-n, --network <network>", "Pick a network: testnet/mainnet","testnet")
